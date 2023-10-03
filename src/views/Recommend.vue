@@ -1,35 +1,42 @@
 <template>
   <div class="recommend">
-    <div class="slider-wrapper">
-      <div class="slider-content">
-        <slider v-if="sliders.length" :sliders="sliders"></slider>
+    <Scroll class="recommend-content">
+      <div>
+        <div class="slider-wrapper">
+          <div class="slider-content">
+            <slider v-if="sliders.length" :sliders="sliders"></slider>
+          </div>
+        </div>
+        <div class="recommend-list">
+          <h1 class="list-title">热门歌单列表</h1>
+          <ul>
+            <li v-for="item in albums" class="item" :key="item.id">
+              <div class="icon">
+                <img :src="item.pic" width="60" height="60">
+              </div>
+              <div class="text">
+                <h2 class="name">
+                  {{ item.username }}
+                </h2>
+                <p class="title">
+                  {{ item.title }}
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="recommend-list">
-      <h1 class="list-title">热门歌单列表</h1>
-      <ul>
-        <li v-for="item in albums" class="item" :key="item.id">
-          <div class="icon">
-            <img :src="item.pic" width="60" height="60">
-          </div>
-          <div class="text">
-            <h2 class="name">
-              {{ item.username }}
-            </h2>
-            <p class="title">
-              {{ item.title }}
-            </p>
-          </div>
-        </li>
-      </ul>
-    </div>
+    </Scroll>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { getRecommend } from '../service/recommend'
+
+// 组件
 import Slider from '../components/base/slider/Slider.vue'
+import Scroll from '../components/base/scroll/Scroll.vue'
 
 import type { Sliders, Albums } from './types'
 
@@ -52,62 +59,66 @@ onMounted(async () => {
   width: 100%;
   top: 88px;
   bottom: 0;
-  overflow: scroll;
 
-  .slider-wrapper {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-top: 40%;
+  .recommend-content {
+    height: 100%;
     overflow: hidden;
 
-    .slider-content {
-      position: absolute;
-      left: 0;
-      top: 0;
+    .slider-wrapper {
+      position: relative;
       width: 100%;
-      height: 100%;
-    }
-  }
+      height: 0;
+      padding-top: 40%;
+      overflow: hidden;
 
-  .recommend-list {
-    .list-title {
-      height: 65px;
-      line-height: 65px;
-      text-align: center;
-      font-size: $font-size-medium;
-      color: $color-theme;
-    }
-
-    .item {
-      display: flex;
-      box-sizing: border-box;
-      align-items: center;
-      padding: 0 20px 20px 20px;
-
-      .icon {
-        flex: 0 0 60px;
-        width: 60px;
-        padding-right: 20px;
+      .slider-content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
       }
+    }
 
-      .text {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        flex: 1;
-        line-height: 20px;
-        overflow: hidden;
+    .recommend-list {
+      .list-title {
+        height: 65px;
+        line-height: 65px;
+        text-align: center;
         font-size: $font-size-medium;
+        color: $color-theme;
       }
 
-      .name {
-        margin-bottom: 10px;
-        color: $color-text;
-      }
+      .item {
+        display: flex;
+        box-sizing: border-box;
+        align-items: center;
+        padding: 0 20px 20px 20px;
 
-      .title {
-        color: $color-text-d;
+        .icon {
+          flex: 0 0 60px;
+          width: 60px;
+          padding-right: 20px;
+        }
+
+        .text {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          flex: 1;
+          line-height: 20px;
+          overflow: hidden;
+          font-size: $font-size-medium;
+        }
+
+        .name {
+          margin-bottom: 10px;
+          color: $color-text;
+        }
+
+        .title {
+          color: $color-text-d;
+        }
       }
     }
   }

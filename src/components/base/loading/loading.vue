@@ -14,6 +14,9 @@ const titleRef = ref<string>('正在载入...')
 function setTitle(title: string) {
   titleRef.value = title
 }
+defineExpose({
+  setTitle
+})
 </script>
 
 <style lang="scss" scoped>

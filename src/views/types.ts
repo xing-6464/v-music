@@ -5,3 +5,10 @@ export type Albums = {
   title: string
   username: string
 }
+
+export type Singer = {
+  id: number
+  mid: string
+  name: string
+  pic: string
+}

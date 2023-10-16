@@ -1,6 +1,6 @@
 <template>
-  <Scroll class="index-list">
-    <ul>
+  <Scroll class="index-list" :probe-type="3" @scroll="onScroll">
+    <ul ref="groupRef">
       <li v-for="group in data" :key="group.title" class="group">
         <h2 class="title">{{ group.title }}</h2>
         <ul>
@@ -11,16 +11,24 @@
         </ul>
       </li>
     </ul>
+    <div class="fixed">
+      <div class="fixed-title">
+        {{ fixedTitle }}
+      </div>
+    </div>
   </Scroll>
 </template>
 
 <script setup lang="ts">
 import Scroll from '../scroll/Scroll.vue'
+import useFixed from './useFixed'
 import type { Singers } from '../../../views/types.ts'
 
-withDefaults(defineProps<{ data: Singers[] }>(), {
+const props = withDefaults(defineProps<{ data: Singers[] }>(), {
   data: () => []
 })
+
+const { groupRef, onScroll } = useFixed(props)
 
 </script>
 
@@ -102,4 +110,5 @@ withDefaults(defineProps<{ data: Singers[] }>(), {
       }
     }
   }
-}</style>
+}
+</style>

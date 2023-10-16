@@ -1,7 +1,7 @@
-import type { Singers } from '@/views/types'
 import { ref, watch, nextTick, computed } from 'vue'
+import type { IndexListProps } from './types'
 
-export default function useFixed(props: { data: Singers[] }) {
+export default function useFixed(props: IndexListProps) {
   const TITLE_HEIGHT = 30
   const groupRef = ref<HTMLUListElement | null>(null)
   const listHeights = ref<number[]>([])
@@ -71,5 +71,6 @@ export default function useFixed(props: { data: Singers[] }) {
     onScroll,
     fixedTitle,
     fixedStyle,
+    currentIndex,
   }
 }

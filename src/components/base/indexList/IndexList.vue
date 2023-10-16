@@ -16,19 +16,28 @@
         {{ fixedTitle }}
       </div>
     </div>
+    <div class="shortcut">
+      <ul>
+        <li v-for="(item, index) in shortcutList" :key="item" class="item" :class="{ 'current': currentIndex === index }">
+          {{ item }}
+        </li>
+      </ul>
+    </div>
   </Scroll>
 </template>
 
 <script setup lang="ts">
 import Scroll from '../scroll/Scroll.vue'
 import useFixed from './useFixed'
-import type { Singers } from '../../../views/types.ts'
+import useShortcut from './useShortcut'
+import type { IndexListProps } from './types';
 
-const props = withDefaults(defineProps<{ data: Singers[] }>(), {
+const props = withDefaults(defineProps<IndexListProps>(), {
   data: () => []
 })
 
-const { groupRef, fixedTitle, fixedStyle, onScroll } = useFixed(props)
+const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } = useFixed(props)
+const { shortcutList } = useShortcut(props)
 
 </script>
 

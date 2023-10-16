@@ -11,8 +11,8 @@ import type { ScrollProps, ScrollEmits } from './useScroll'
 
 
 const props = withDefaults(defineProps<ScrollProps>(), {
-  click: () => true,
-  probeType: () => 0
+  click: true,
+  probeType: 0
 })
 
 const emits = defineEmits<ScrollEmits>()

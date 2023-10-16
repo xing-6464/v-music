@@ -11,7 +11,7 @@
         </ul>
       </li>
     </ul>
-    <div class="fixed">
+    <div class="fixed" v-show="fixedTitle">
       <div class="fixed-title">
         {{ fixedTitle }}
       </div>
@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<{ data: Singers[] }>(), {
   data: () => []
 })
 
-const { groupRef, onScroll } = useFixed(props)
+const { groupRef, fixedTitle, onScroll } = useFixed(props)
 
 </script>
 

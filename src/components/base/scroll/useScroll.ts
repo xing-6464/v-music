@@ -38,4 +38,6 @@ export default function useScroll(
   onUnmounted(() => {
     scroll.value?.destroy()
   })
+
+  return scroll
 }

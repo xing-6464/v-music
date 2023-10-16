@@ -19,7 +19,11 @@ const emits = defineEmits<ScrollEmits>()
 
 const rootRef = ref<HTMLElement | null>(null)
 
-useScroll(rootRef, props, emits)
+const scroll = useScroll(rootRef, props, emits)
+
+defineExpose({
+  scroll
+})
 
 </script>
 

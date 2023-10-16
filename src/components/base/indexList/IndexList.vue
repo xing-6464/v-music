@@ -1,5 +1,5 @@
 <template>
-  <Scroll class="index-list" :probe-type="3" @scroll="onScroll">
+  <Scroll class="index-list" :probe-type="3" @scroll="onScroll" ref="scrollRef">
     <ul ref="groupRef">
       <li v-for="group in data" :key="group.title" class="group">
         <h2 class="title">{{ group.title }}</h2>
@@ -16,9 +16,11 @@
         {{ fixedTitle }}
       </div>
     </div>
-    <div class="shortcut">
+    <div class="shortcut" @touchstart.stop.prevent="onShortTouchStart" @touchmove.stop.prevent="onShortTouchStart"
+      @touchend.stop.prevent="onShortTouchStart">
       <ul>
-        <li v-for="(item, index) in shortcutList" :key="item" class="item" :class="{ 'current': currentIndex === index }">
+        <li v-for="(item, index) in shortcutList" :key="item" class="item" :data-index="index"
+          :class="{ 'current': currentIndex === index }">
           {{ item }}
         </li>
       </ul>
@@ -30,14 +32,14 @@
 import Scroll from '../scroll/Scroll.vue'
 import useFixed from './useFixed'
 import useShortcut from './useShortcut'
-import type { IndexListProps } from './types';
+import type { IndexListProps } from './types'
 
 const props = withDefaults(defineProps<IndexListProps>(), {
   data: () => []
 })
 
 const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } = useFixed(props)
-const { shortcutList } = useShortcut(props)
+const { shortcutList, scrollRef, onShortTouchStart } = useShortcut(props, groupRef)
 
 </script>
 

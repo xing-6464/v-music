@@ -16,8 +16,8 @@
         {{ fixedTitle }}
       </div>
     </div>
-    <div class="shortcut" @touchstart.stop.prevent="onShortTouchStart" @touchmove.stop.prevent="onShortTouchStart"
-      @touchend.stop.prevent="onShortTouchStart">
+    <div class="shortcut" @touchstart.stop.prevent="onShortTouchStart" @touchmove.stop.prevent="onShortcutTouchMove"
+      @touchend.stop.prevent="">
       <ul>
         <li v-for="(item, index) in shortcutList" :key="item" class="item" :data-index="index"
           :class="{ 'current': currentIndex === index }">
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<IndexListProps>(), {
 })
 
 const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } = useFixed(props)
-const { shortcutList, scrollRef, onShortTouchStart } = useShortcut(props, groupRef)
+const { shortcutList, scrollRef, onShortTouchStart, onShortcutTouchMove } = useShortcut(props, groupRef)
 
 </script>
 

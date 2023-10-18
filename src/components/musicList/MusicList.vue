@@ -13,7 +13,7 @@
       </div>
       <div class="filter"></div>
     </div>
-    <Scroll class="list" :style="scrollStyle" v-loading="props.loading">
+    <Scroll class="list" :style="scrollStyle" v-loading="props.loading" :probe-type="3" @scroll="onScroll">
       <div class="song-list-wrapper">
         <song-list :songs="props.songs"></song-list>
       </div>
@@ -28,6 +28,8 @@ import Scroll from '../base/scroll/Scroll.vue'
 import type { MusicListProps } from './types.ts'
 import { useRouter } from 'vue-router'
 
+const RESERVED_HEIGHT = 40
+
 const props = withDefaults(defineProps<MusicListProps>(), {
   songs: () => []
 })
@@ -36,9 +38,27 @@ const router = useRouter()
 
 const bgImage = ref<HTMLElement>()
 const imageHeight = ref<number>(0)
+const scrollY = ref<number>(0)
+const maxTranslateY = ref<number>(0)
 
 const bgImageStyle = computed<CSSProperties>(() => {
-  return { backgroundImage: `url(${props.pic})` }
+  let zIndex = 0
+  let paddingTop: number | string = '70%'
+  let height: number | string = 0
+  let translateZ = 0
+
+  if (scrollY.value > maxTranslateY.value) {
+    zIndex = 10
+    paddingTop = 0
+    height = `${RESERVED_HEIGHT}px`
+    translateZ = 1
+  }
+
+  let scale = 1
+  if (scrollY.value < 0) {
+    scale = 1 + Math.abs(scrollY.value / imageHeight.value)
+  }
+  return { backgroundImage: `url(${props.pic})`, zIndex, paddingTop, height, transform: `scale(${scale})translateZ(${translateZ})` }
 })
 const scrollStyle = computed<CSSProperties>(() => {
   return { top: `${imageHeight.value}px` }
@@ -46,10 +66,15 @@ const scrollStyle = computed<CSSProperties>(() => {
 
 onMounted(() => {
   imageHeight.value = bgImage.value?.clientHeight ? bgImage.value?.clientHeight : 0
+  maxTranslateY.value = imageHeight.value - RESERVED_HEIGHT
 })
 
 function goBack() {
   router.back()
+}
+
+function onScroll(pos: any) {
+  scrollY.value = -pos.y
 }
 
 </script>
@@ -93,7 +118,6 @@ function goBack() {
     width: 100%;
     transform-origin: top;
     background-size: cover;
-    padding-top: 70%;
 
     .play-btn-wrapper {
       position: absolute;

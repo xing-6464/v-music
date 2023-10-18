@@ -37,4 +37,4 @@ function selectSinger(singer: Singer) {
   top: 88px;
   bottom: 0;
 }
-</style>
+</style>../components/indexList/IndexList.vue

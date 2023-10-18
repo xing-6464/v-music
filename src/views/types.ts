@@ -18,4 +18,8 @@ type Singers = {
   list: Singer[]
 }
 
-export type { Sliders, Albums, Singer, Singers }
+type Song = {
+  [key: string]: string
+}
+
+export type { Sliders, Albums, Singer, Singers, Song }

@@ -4,7 +4,7 @@
       <li v-for="group in data" :key="group.title" class="group">
         <h2 class="title">{{ group.title }}</h2>
         <ul>
-          <li v-for="item in group.list" :key="item.id" class="item">
+          <li v-for="item in group.list" :key="item.id" class="item" @click="onItemClick(item)">
             <img class="avatar" v-lazy="item.pic">
             <span class="name">{{ item.name }}</span>
           </li>
@@ -33,13 +33,19 @@ import Scroll from '../scroll/Scroll.vue'
 import useFixed from './useFixed'
 import useShortcut from './useShortcut'
 import type { IndexListProps } from './types'
+import type { Singer } from '@/views/types'
 
 const props = withDefaults(defineProps<IndexListProps>(), {
   data: () => []
 })
+const emits = defineEmits<{ select: [item: Singer] }>()
 
 const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } = useFixed(props)
 const { shortcutList, scrollRef, onShortTouchStart, onShortcutTouchMove } = useShortcut(props, groupRef)
+
+function onItemClick(item: Singer) {
+  emits('select', item)
+}
 
 </script>
 

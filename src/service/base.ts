@@ -5,7 +5,7 @@ const baseURL = '/'
 
 axios.defaults.baseURL = baseURL
 
-export function get(url: string, params: any) {
+export function get(url: string, params?: any) {
   return axios
     .get(url, {
       params,

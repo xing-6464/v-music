@@ -1,6 +1,7 @@
 <template>
   <div class="singer" v-loading="!singers.length">
-    <IndexList :data="singers" />
+    <IndexList :data="singers" @select="selectSinger" />
+    <RouterView :singer="selectedSinger"></RouterView>
   </div>
 </template>
 
@@ -8,14 +9,24 @@
 import { getSingerList } from '@/service/singer'
 import { onMounted, ref } from 'vue'
 import IndexList from '../components/base/indexList/IndexList.vue'
-import type { Singers } from './types'
+import type { Singer, Singers } from './types'
+import { useRouter } from 'vue-router'
 
 const singers = ref<Singers[]>([])
+const selectedSinger = ref<Singer>()
+const router = useRouter()
 
 onMounted(async () => {
   const result = await getSingerList()
   singers.value = result.singers
 })
+
+function selectSinger(singer: Singer) {
+  selectedSinger.value = singer
+  router.push({
+    path: `/singer/${singer.mid}`
+  })
+}
 
 </script>
 

@@ -3,6 +3,7 @@ import Recommend from '../views/Recommend.vue'
 import Singer from '../views/Singer.vue'
 import TopList from '../views/TopList.vue'
 import Search from '../views/Search.vue'
+import SingerDetail from '../views/SingerDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,12 @@ const router = createRouter({
     {
       path: '/singer',
       component: Singer,
+      children: [
+        {
+          path: ':id',
+          component: SingerDetail,
+        },
+      ],
     },
     {
       path: '/top-list',

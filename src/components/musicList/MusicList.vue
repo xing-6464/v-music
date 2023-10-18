@@ -11,7 +11,7 @@
           <span class="text">随机播放全部</span>
         </div>
       </div>
-      <div class="filter"></div>
+      <div class="filter" :style="filterStyle"></div>
     </div>
     <Scroll class="list" :style="scrollStyle" v-loading="props.loading" :probe-type="3" @scroll="onScroll">
       <div class="song-list-wrapper">
@@ -47,7 +47,9 @@ const bgImageStyle = computed<CSSProperties>(() => {
   let height: number | string = 0
   let translateZ = 0
 
-  if (scrollY.value > maxTranslateY.value) {
+  const scrollYVal = scrollY.value
+
+  if (scrollYVal > maxTranslateY.value) {
     zIndex = 10
     paddingTop = 0
     height = `${RESERVED_HEIGHT}px`
@@ -55,13 +57,24 @@ const bgImageStyle = computed<CSSProperties>(() => {
   }
 
   let scale = 1
-  if (scrollY.value < 0) {
-    scale = 1 + Math.abs(scrollY.value / imageHeight.value)
+  if (scrollYVal < 0) {
+    scale = 1 + Math.abs(scrollYVal / imageHeight.value)
   }
   return { backgroundImage: `url(${props.pic})`, zIndex, paddingTop, height, transform: `scale(${scale})translateZ(${translateZ})` }
 })
 const scrollStyle = computed<CSSProperties>(() => {
   return { top: `${imageHeight.value}px` }
+})
+const filterStyle = computed<CSSProperties>(() => {
+  let blur = 0
+  const scrollYVal = scrollY.value
+  const imageHeightVal = imageHeight.value
+  if (scrollYVal >= 0) {
+    blur = Math.min(maxTranslateY.value / imageHeightVal, scrollYVal / imageHeightVal) * 20
+  }
+  return {
+    backdropFilter: `blur(${blur}px)`
+  }
 })
 
 onMounted(() => {

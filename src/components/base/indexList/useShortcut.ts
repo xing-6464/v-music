@@ -15,6 +15,7 @@ export default function useShortcut(props: IndexListProps, groupRef: Ref<HTMLULi
   const touch: { [index: string]: number } = {}
 
   function onShortTouchStart(e: any) {
+    console.log(e.target!.dataset.index)
     const anchorIndex = parseInt(e.target!.dataset.index)
     touch.y1 = e.touches[0].pageY
     touch.anchorIndex = anchorIndex
@@ -31,10 +32,11 @@ export default function useShortcut(props: IndexListProps, groupRef: Ref<HTMLULi
   }
 
   function scrollTo(index: number) {
+    if (isNaN(index)) return
     index = Math.max(0, Math.min(shortcutList.value.length - 1, index))
     const targetEl = groupRef.value!.children[index]
     const scroll = scrollRef.value?.scroll as unknown as BScrollConstructor<{}> | undefined 
-    scroll!.scrollToElement(targetEl as HTMLElement, 0, true, true)
+    scroll!.scrollToElement(targetEl as HTMLElement, 0, 0, 0)
   }
 
   return {

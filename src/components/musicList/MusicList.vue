@@ -1,39 +1,56 @@
 <template>
   <div class="music-list">
-    <div class="back">
+    <div class="back" @click="goBack">
       <i class="icon-back"></i>
     </div>
-    <h1 class="title">{{ title }}</h1>
-    <div class="bg-image" :style="bgImageStyle">
-      <!-- <div class="play-btn-wrapper" :style="playBtnStyle">
-        <div v-show="songs.length > 0" class="play-btn" @click="random">
+    <h1 class="title">{{ props.title }}</h1>
+    <div class="bg-image" :style="bgImageStyle" ref="bgImage">
+      <div class="play-btn-wrapper">
+        <div v-show="props.songs.length > 0" class="play-btn">
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
         </div>
-      </div> -->
-      <!-- <div class="filter" :style="filterStyle"></div> -->
-    </div>
-    <scroll class="list">
-      <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
       </div>
-    </scroll>
+      <div class="filter"></div>
+    </div>
+    <Scroll class="list" :style="scrollStyle" v-loading="props.loading">
+      <div class="song-list-wrapper">
+        <song-list :songs="props.songs"></song-list>
+      </div>
+    </Scroll>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref, type CSSProperties, onMounted } from 'vue'
 import SongList from '../base/songList/SongList.vue'
 import Scroll from '../base/scroll/Scroll.vue'
 import type { MusicListProps } from './types.ts'
+import { useRouter } from 'vue-router'
 
-withDefaults(defineProps<MusicListProps>(), {
+const props = withDefaults(defineProps<MusicListProps>(), {
   songs: () => []
 })
 
-const bgImageStyle = computed(() => {
-  return {}
+const router = useRouter()
+
+const bgImage = ref<HTMLElement>()
+const imageHeight = ref<number>(0)
+
+const bgImageStyle = computed<CSSProperties>(() => {
+  return { backgroundImage: `url(${props.pic})` }
 })
+const scrollStyle = computed<CSSProperties>(() => {
+  return { top: `${imageHeight.value}px` }
+})
+
+onMounted(() => {
+  imageHeight.value = bgImage.value?.clientHeight ? bgImage.value?.clientHeight : 0
+})
+
+function goBack() {
+  router.back()
+}
 
 </script>
 
@@ -76,6 +93,7 @@ const bgImageStyle = computed(() => {
     width: 100%;
     transform-origin: top;
     background-size: cover;
+    padding-top: 70%;
 
     .play-btn-wrapper {
       position: absolute;

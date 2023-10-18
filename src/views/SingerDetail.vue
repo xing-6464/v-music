@@ -1,6 +1,6 @@
 <template>
   <div class="singer-detail">
-    <MusicList :songs="getSongs" :title="title" :pic="pic"></MusicList>
+    <MusicList :songs="songs" :title="title" :pic="pic" :loading="loading"></MusicList>
   </div>
 </template>
 
@@ -13,7 +13,8 @@ import MusicList from '../components/musicList/MusicList.vue'
 
 const props = defineProps<{ singer: Singer }>()
 
-const getSongs = ref<Song[]>([])
+const songs = ref<Song[]>([])
+const loading = ref<boolean>(true)
 
 const pic = computed(() => {
   return props.singer && props.singer.pic
@@ -24,8 +25,8 @@ const title = computed(() => {
 
 onMounted(async () => {
   const result = await getSingerDetail(props.singer)
-  const songs = await processSongs(result.songs)
-  getSongs.value = songs
+  songs.value = await processSongs(result.songs)
+  loading.value = false
 })
 
 </script>

@@ -1,6 +1,5 @@
 <template>
   <div class="singer-detail">
-    hello {{ props.singer }}
   </div>
 </template>
 
@@ -8,12 +7,14 @@
 import { getSingerDetail } from '@/service/singer'
 import { onMounted } from 'vue'
 import type { Singer } from './types'
+import { processSongs } from '../service/song'
 
 const props = defineProps<{ singer: Singer }>()
 
 onMounted(async () => {
   const result = await getSingerDetail(props.singer)
-  console.log(result)
+  const songs = await processSongs(result.songs)
+  console.log(songs)
 })
 
 </script>

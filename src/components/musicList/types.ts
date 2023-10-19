@@ -5,4 +5,5 @@ export type MusicListProps = {
   title: string
   pic: string
   loading: boolean
+  noResultText: string
 }

@@ -9,6 +9,11 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
+
+defineOptions({
+  name: 'loading',
+})
+
 const titleRef = ref<string>('正在载入...')
 
 function setTitle(title: string) {

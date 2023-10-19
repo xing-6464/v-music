@@ -13,7 +13,8 @@
       </div>
       <div class="filter" :style="filterStyle"></div>
     </div>
-    <Scroll class="list" :style="scrollStyle" v-loading="props.loading" :probe-type="3" @scroll="onScroll">
+    <Scroll class="list" :style="scrollStyle" v-loading="props.loading" v-no-result="noResult" :probe-type="3"
+      @scroll="onScroll">
       <div class="song-list-wrapper">
         <song-list :songs="props.songs"></song-list>
       </div>
@@ -31,7 +32,8 @@ import { useRouter } from 'vue-router'
 const RESERVED_HEIGHT = 40
 
 const props = withDefaults(defineProps<MusicListProps>(), {
-  songs: () => []
+  songs: () => [],
+  noResultText: '抱歉，没有找到默认的歌曲'
 })
 
 const router = useRouter()
@@ -75,6 +77,10 @@ const filterStyle = computed<CSSProperties>(() => {
   return {
     backdropFilter: `blur(${blur}px)`
   }
+})
+
+const noResult = computed(() => {
+  return !props.loading && !props.songs.length
 })
 
 onMounted(() => {

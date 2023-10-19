@@ -16,7 +16,7 @@
     <Scroll class="list" :style="scrollStyle" v-loading="props.loading" v-no-result="noResult" :probe-type="3"
       @scroll="onScroll">
       <div class="song-list-wrapper">
-        <song-list :songs="props.songs"></song-list>
+        <song-list :songs="props.songs" @select="selectItem"></song-list>
       </div>
     </Scroll>
   </div>
@@ -28,6 +28,8 @@ import SongList from '../base/songList/SongList.vue'
 import Scroll from '../base/scroll/Scroll.vue'
 import type { MusicListProps } from './types.ts'
 import { useRouter } from 'vue-router'
+import useStore from '@/stores/store'
+import type { Song } from '@/views/types'
 
 const RESERVED_HEIGHT = 40
 
@@ -36,6 +38,7 @@ const props = withDefaults(defineProps<MusicListProps>(), {
   noResultText: '抱歉，没有找到默认的歌曲'
 })
 
+const store = useStore()
 const router = useRouter()
 
 const bgImage = ref<HTMLElement>()
@@ -94,6 +97,13 @@ function goBack() {
 
 function onScroll(pos: any) {
   scrollY.value = -pos.y
+}
+
+function selectItem({ song, index }: { song: Song, index: number }) {
+  store.selectPlay({
+    list: props.songs,
+    index
+  })
 }
 
 </script>

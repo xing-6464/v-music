@@ -1,6 +1,6 @@
 <template>
   <ul class="song-list">
-    <li class="item" v-for="song in props.songs" :key="song.id">
+    <li class="item" v-for="(song, index) in props.songs" :key="song.id" @click="selectItem(song, index)">
       <div class="content">
         <h2 class="name">{{ song.name }}</h2>
         <p class="desc">{{ getDesc(song) }}</p>
@@ -13,11 +13,15 @@
 import type { Song } from '../../../views/types'
 
 const props = defineProps<{ songs: Song[] }>()
+const emits = defineEmits<{ select: [object: { song: Song, index: number }] }>()
 
-console.log(props.songs)
 
 function getDesc(song: Song) {
   return `${song.singer}·${song.album}`
+}
+
+function selectItem(song: Song, index: number) {
+  emits('select', { song, index })
 }
 
 </script>

@@ -4,6 +4,7 @@ import lazyPlugin from 'vue3-lazy'
 import defaultImg from './assets/images/default.png'
 import loadingDirective from './components/base/loading/directive'
 import noResultDirective from './components/base/noResult/directive'
+import { PiniaLogger } from 'pinia-logger'
 
 import App from './App.vue'
 import router from './router'
@@ -12,7 +13,17 @@ import '@/assets/scss/index.scss'
 
 const app = createApp(App)
 
-app.use(createPinia())
+const pinia = createPinia()
+
+pinia.use(
+  PiniaLogger({
+    expanded: true,
+    disabled: import.meta.env.MODE === 'production',
+    actions: ['selectPlay'],
+  })
+)
+
+app.use(pinia)
 app.use(router)
 
 app.use(lazyPlugin, {

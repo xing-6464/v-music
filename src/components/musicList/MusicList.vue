@@ -5,8 +5,8 @@
     </div>
     <h1 class="title">{{ props.title }}</h1>
     <div class="bg-image" :style="bgImageStyle" ref="bgImage">
-      <div class="play-btn-wrapper">
-        <div v-show="props.songs.length > 0" class="play-btn">
+      <div class="play-btn-wrapper" :style="playBtnStyle">
+        <div v-show="props.songs.length > 0" class="play-btn" @click="random">
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
         </div>
@@ -46,6 +46,15 @@ const imageHeight = ref<number>(0)
 const scrollY = ref<number>(0)
 const maxTranslateY = ref<number>(0)
 
+const playBtnStyle = computed<CSSProperties>(() => {
+  let display = ''
+  if (scrollY.value >= maxTranslateY.value) {
+    display = 'none'
+  }
+  return {
+    display
+  }
+})
 const bgImageStyle = computed<CSSProperties>(() => {
   let zIndex = 0
   let paddingTop: number | string = '70%'
@@ -104,6 +113,10 @@ function selectItem({ song, index }: { song: Song, index: number }) {
     list: props.songs,
     index
   })
+}
+
+function random() {
+  store.randomPlay(props.songs)
 }
 
 </script>

@@ -17,13 +17,13 @@
             <i class="icon-sequence"></i>
           </div>
           <div class="icon i-left">
-            <i class="icon-prev"></i>
+            <i @click="prev" class="icon-prev"></i>
           </div>
-          <div @click="togglePlay" class="icon i-center">
-            <i :class="playIcon"></i>
+          <div class="icon i-center">
+            <i @click="togglePlay" :class="playIcon"></i>
           </div>
           <div class="icon i-right">
-            <i class="icon-next"></i>
+            <i @click="next" class="icon-next"></i>
           </div>
           <div class="icon i-right">
             <i class="icon-not-favorite"></i>
@@ -45,6 +45,8 @@ const store = useStore()
 const fullScreen = computed(() => store.fullScreen)
 const currentSong = computed(() => store.currentSong)
 const playing = computed(() => store.playing)
+const currentIndex = computed(() => store.currentIndex)
+const playlist = computed(() => store.playList)
 
 const playIcon = computed(() => {
   return playing.value ? 'icon-pause' : 'icon-play'
@@ -67,8 +69,50 @@ function togglePlay() {
   store.setPlayingState(!playing.value)
 }
 
+function prev() {
+  const list = playlist.value
+  if (!list.length) return
+
+  if (list.length === 1) {
+    loop()
+  } else {
+    let index = currentIndex.value - 1
+    if (index === -1) {
+      index = list.length - 1
+    }
+    store.setCurrentIndex(index)
+    if (!playing.value) {
+      store.setPlayingState(true)
+    }
+  }
+}
+
+function next() {
+  const list = playlist.value
+  if (!list.length) return
+
+  if (list.length === 1) {
+    loop()
+  } else {
+    let index = currentIndex.value + 1
+    if (index === list.length) {
+      index = 0
+    }
+    store.setCurrentIndex(index)
+    if (!playing.value) {
+      store.setPlayingState(true)
+    }
+  }
+}
+
 function pause() {
   store.setPlayingState(false)
+}
+
+function loop() {
+  const audioEl = audioRef.value
+  audioEl!.currentTime = 0
+  audioEl!.play()
 }
 
 function goBack() {

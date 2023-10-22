@@ -14,7 +14,7 @@
       <div class="bottom">
         <div class="operators">
           <div class="icon i-left">
-            <i class="icon-sequence"></i>
+            <i @click="changeMode" :class="modeIcon"></i>
           </div>
           <div class="icon i-left" :class="disableCls">
             <i @click="prev" class="icon-prev"></i>
@@ -38,17 +38,23 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import useStore from '../../stores/store'
+import useMode from './useMode'
+
+// hooks
+const { changeMode, modeIcon } = useMode()
 
 const audioRef = ref<HTMLAudioElement | null>(null)
+const songReady = ref(false)
 
+// pinia
 const store = useStore()
 const fullScreen = computed(() => store.fullScreen)
 const currentSong = computed(() => store.currentSong)
 const playing = computed(() => store.playing)
 const currentIndex = computed(() => store.currentIndex)
 const playlist = computed(() => store.playList)
-const songReady = ref(false)
 
+// computed
 const playIcon = computed(() => {
   return playing.value ? 'icon-pause' : 'icon-play'
 })
@@ -56,6 +62,8 @@ const disableCls = computed(() => {
   return songReady.value ? '' : 'disable'
 })
 
+
+// watch
 watch(currentSong, (newSong) => {
   if (!newSong.id || !newSong.url) return
 
@@ -71,6 +79,7 @@ watch(playing, (newPlaying) => {
   newPlaying ? audioEl?.play() : audioEl?.pause()
 })
 
+// methods
 function togglePlay() {
   if (!songReady.value) return
   store.setPlayingState(!playing.value)

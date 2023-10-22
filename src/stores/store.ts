@@ -21,6 +21,21 @@ const useStore = defineStore('store', {
     },
   },
   actions: {
+    changeMode(mode: number) {
+      const currentId = this.currentSong.id
+      if (mode === PLAY_MODE.random) {
+        this.setPlayList(shuffle(this.sequencesList))
+      } else {
+        this.setPlayList(this.sequencesList)
+      }
+
+      const index = this.playList.findIndex((song) => {
+        return song.id === currentId
+      })
+
+      this.setCurrentIndex(index)
+      this.setPlayMode(mode)
+    },
     selectPlay({ list, index }: { list: Song[]; index: number }) {
       this.setPlayMode(PLAY_MODE.sequence)
       this.setSequenceList(list)

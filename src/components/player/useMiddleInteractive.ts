@@ -1,23 +1,37 @@
 import { ref, type CSSProperties } from 'vue'
 
+type Touch = { startX?: number, startY?: number, percent?: number, directionLocked?: '' | 'v' | 'h' }
+
 export default function useMiddleInteractive() {
   const currentShow = ref<'cd' | 'lyric'>('cd')
   const middleLStyle = ref<CSSProperties>()
   const middleRStyle = ref<CSSProperties>()
 
-  const touch: { startX?: number, percent?: number } = {}
+  const touch: Touch = {}
   let currentView: 'cd' | 'lyric' = 'cd'
 
   function onMiddleTouchStart(e: any) {
     touch.startX = e.touches[0].pageX 
+    touch.startY = e.touches[0].pageY
+    touch.directionLocked = ''
   }
 
   function onMiddleTouchMove(e: any) {
     const deltaX = e.touches[0].pageX - touch.startX!
+    const deltaY = e.touches[0].pageY - touch.startY!
+
+    const absDeltaX = Math.abs(deltaX)
+    const absDeltaY = Math.abs(deltaY)
+
+    if (!touch.directionLocked) {
+      touch.directionLocked = absDeltaX >= absDeltaY ? 'h' : 'v'
+    }
+
+    if (touch.directionLocked === 'v') return
+
     const left = currentView === 'cd' ? 0 : -window.innerWidth
 
     const offsetWidth = Math.min(0, Math.max(deltaX + left, -window.innerWidth))
-    console.log(touch)
     
     touch.percent = Math.abs(offsetWidth / window.innerWidth)
 

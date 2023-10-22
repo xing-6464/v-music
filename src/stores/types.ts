@@ -7,4 +7,5 @@ export type StoreState = {
   playMode: number
   currentIndex: number
   fullScreen: boolean
+  favoriteList: Song[]
 }

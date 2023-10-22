@@ -13,6 +13,7 @@ const useStore = defineStore('store', {
       playMode: PLAY_MODE.sequence,
       currentIndex: 0,
       fullScreen: false,
+      favoriteList: [],
     }
   },
   getters: {
@@ -55,10 +56,10 @@ const useStore = defineStore('store', {
     setPlayingState(playing: boolean) {
       this.playing = playing
     },
-    setSequenceList(list: any[]) {
+    setSequenceList(list: Song[]) {
       this.sequencesList = list
     },
-    setPlayList(list: any[]) {
+    setPlayList(list: Song[]) {
       this.playList = list
     },
     setPlayMode(mode: number) {
@@ -69,6 +70,9 @@ const useStore = defineStore('store', {
     },
     setFullScreen(fullScreen: boolean) {
       this.fullScreen = fullScreen
+    },
+    setFavoriteList(list: Song[]) {
+      this.favoriteList = list
     },
   },
 })

@@ -11,8 +11,9 @@
         <h1 class="title">{{ currentSong.name }}</h1>
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
-      <div class="middle">
-        <div class="middle-l">
+      <div class="middle" @touchstart.prevent="onMiddleTouchStart" @touchmove.prevent="onMiddleTouchMove"
+        @touchend.prevent="onMiddleTouchEnd">
+        <div class="middle-l" :style="middleLStyle">
           <div class="cd-wrapper">
             <div class="cd" ref="cdRef">
               <img :src="currentSong.pic" ref="cdImageRef" class="image" :class="cdCls">
@@ -22,7 +23,7 @@
             </div>
           </div>
         </div>
-        <Scroll class="middle-r" ref="lyricScrollRef">
+        <Scroll class="middle-r" :style="middleRStyle" ref="lyricScrollRef">
           <div class="lyric-wrapper">
             <div v-if="currentLyric" ref="lyricListRef">
               <p class="text" :class="{ 'current': currentLineNum === index }" v-for="(line, index) in currentLyric.lines"
@@ -37,6 +38,10 @@
         </Scroll>
       </div>
       <div class="bottom">
+        <div class="dot-wrapper">
+          <span class="dot" :class="{ 'active': currentShow === 'cd' }"></span>
+          <span class="dot" :class="{ 'active': currentShow === 'lyric' }"></span>
+        </div>
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
@@ -80,6 +85,7 @@ import Scroll from '../base/scroll/Scroll.vue'
 import { PLAY_MODE } from '../../assets/js/constant'
 import useCd from './useCd'
 import useLyric from './useLyric'
+import useMiddleInteractive from './useMiddleInteractive'
 
 let progressChanging = false
 
@@ -92,6 +98,7 @@ const { changeMode, modeIcon } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls, cdImageRef, cdRef } = useCd()
 const { currentLyric, currentLineNum, playLyric, lyricListRef, lyricScrollRef, pureMusicLyric, playingLyric, stopLyric } = useLyric({ songReady, currentTime })
+const { currentShow, middleLStyle, middleRStyle, onMiddleTouchEnd, onMiddleTouchMove, onMiddleTouchStart } = useMiddleInteractive()
 
 // pinia
 const store = useStore()

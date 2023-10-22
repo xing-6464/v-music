@@ -12,10 +12,13 @@
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
       <div class="middle">
-        <div class="middle-l" style="display: none;">
+        <div class="middle-l">
           <div class="cd-wrapper">
             <div class="cd" ref="cdRef">
               <img :src="currentSong.pic" ref="cdImageRef" class="image" :class="cdCls">
+            </div>
+            <div class="playing-lyric-wrapper">
+              <div class="playing-lyric">{{ playingLyric }}</div>
             </div>
           </div>
         </div>
@@ -26,6 +29,9 @@
                 :key="line.num">
                 {{ line.txt }}
               </p>
+            </div>
+            <div class="pure-music" v-show="pureMusicLyric">
+              <p>{{ pureMusicLyric }}</p>
             </div>
           </div>
         </Scroll>
@@ -85,7 +91,7 @@ const currentTime = ref(0)
 const { changeMode, modeIcon } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls, cdImageRef, cdRef } = useCd()
-const { currentLyric, currentLineNum, playLyric, lyricListRef, lyricScrollRef, stopLyric } = useLyric({ songReady, currentTime })
+const { currentLyric, currentLineNum, playLyric, lyricListRef, lyricScrollRef, pureMusicLyric, playingLyric, stopLyric } = useLyric({ songReady, currentTime })
 
 // pinia
 const store = useStore()
@@ -115,6 +121,8 @@ watch(currentSong, (newSong) => {
   stopLyric()
   currentLyric.value = null
   currentLineNum.value = 0
+  pureMusicLyric.value = ''
+  playingLyric.value = ''
 
   currentTime.value = 0
   songReady.value = false

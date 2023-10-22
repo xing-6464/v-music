@@ -8,6 +8,8 @@ type UseLyricProps = { songReady:Ref<boolean>, currentTime: Ref<number> }
 export default function useLyric({ songReady, currentTime }: UseLyricProps) {
   const currentLyric = ref<any>(null)
   const currentLineNum = ref(0)
+  const pureMusicLyric = ref('')
+  const playingLyric = ref('')
   const lyricScrollRef = ref<any>(null)
   const lyricListRef = ref<HTMLDivElement | null>(null)
 
@@ -25,10 +27,14 @@ export default function useLyric({ songReady, currentTime }: UseLyricProps) {
     if (currentSong.value.lyric !== lyric) return
 
     currentLyric.value = new Lyric(lyric, handleLyric)
-    if (songReady.value) {
-      playLyric()
+    const hasLyric = currentLyric.value.lines.length
+    if (hasLyric) {
+      if (songReady.value) {
+        playLyric()
+      }
+    } else {
+      playingLyric.value = pureMusicLyric.value = lyric.replace(/\[(\d{2}):(\d{2}):(\d{2})\]/g, '')
     }
-    console.log(lyric)
   })
 
   function playLyric() {
@@ -45,8 +51,9 @@ export default function useLyric({ songReady, currentTime }: UseLyricProps) {
     }
   }
 
-  function handleLyric({ lineNum }: { lineNum: number }) {
+  function handleLyric({ lineNum, txt }: { lineNum: number, txt: string }) {
     currentLineNum.value = lineNum
+    playingLyric.value = txt
     const scrollComp = lyricScrollRef.value
     const listEl = lyricListRef.value
     if (!listEl) return
@@ -61,9 +68,11 @@ export default function useLyric({ songReady, currentTime }: UseLyricProps) {
   return {
     currentLyric,
     currentLineNum,
+    pureMusicLyric,
     playLyric,
     lyricScrollRef,
     lyricListRef,
+    playingLyric,
     stopLyric
   }
 }

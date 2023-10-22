@@ -23,13 +23,13 @@ export function processSongs(songs: { [key: string]: string }[]) {
   })
 }
 
-const lyricMap: { mid?: string } = {}
+const lyricMap: { [key: string]: string } = {}
 export function getLyric(song: Song) {
   if (song.lyric) {
     return Promise.resolve(song.lyric)
   }
   const mid = song.mid
-  const lyric = lyricMap.mid
+  const lyric = lyricMap[mid]
   if (lyric) {
     return Promise.resolve(lyric)
   }

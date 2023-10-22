@@ -1,10 +1,15 @@
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, type Ref } from 'vue'
 import useStore from '@/stores/store'
 import { getLyric } from '@/service/song'
 import Lyric from 'lyric-parser'
 
-export default function useLyric() {
+type UseLyricProps = { songReady:Ref<boolean>, currentTime: Ref<number> }
+
+export default function useLyric({ songReady, currentTime }: UseLyricProps) {
   const currentLyric = ref<any>(null)
+  const currentLineNum = ref(0)
+  const lyricScrollRef = ref<any>(null)
+  const lyricListRef = ref<HTMLDivElement | null>(null)
 
   const store = useStore()
   const currentSong = computed(() => store.currentSong)
@@ -20,8 +25,45 @@ export default function useLyric() {
     if (currentSong.value.lyric !== lyric) return
 
     currentLyric.value = new Lyric(lyric, handleLyric)
+    if (songReady.value) {
+      playLyric()
+    }
     console.log(lyric)
   })
 
-  function handleLyric() {}
+  function playLyric() {
+    const currentLyricVal = currentLyric.value
+    if (currentLyricVal) {
+      currentLyricVal.seek(currentTime.value * 1000)
+    }
+  }
+
+  function stopLyric() {
+    const currentLyricVal = currentLyric.value
+    if (currentLyricVal) {
+      currentLyricVal.stop()
+    }
+  }
+
+  function handleLyric({ lineNum }: { lineNum: number }) {
+    currentLineNum.value = lineNum
+    const scrollComp = lyricScrollRef.value
+    const listEl = lyricListRef.value
+    if (!listEl) return
+    if (lineNum > 5) {
+      const lineEl = listEl.children[lineNum - 5]
+      scrollComp?.scroll.scrollToElement(lineEl, 1000)
+    } else {
+      scrollComp?.scroll.scrollTo(0, 0, 1000)
+    }
+  }
+
+  return {
+    currentLyric,
+    currentLineNum,
+    playLyric,
+    lyricScrollRef,
+    lyricListRef,
+    stopLyric
+  }
 }

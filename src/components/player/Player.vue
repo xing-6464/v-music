@@ -12,13 +12,23 @@
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
       <div class="middle">
-        <div class="middle-l">
+        <div class="middle-l" style="display: none;">
           <div class="cd-wrapper">
             <div class="cd" ref="cdRef">
               <img :src="currentSong.pic" ref="cdImageRef" class="image" :class="cdCls">
             </div>
           </div>
         </div>
+        <Scroll class="middle-r" ref="lyricScrollRef">
+          <div class="lyric-wrapper">
+            <div v-if="currentLyric" ref="lyricListRef">
+              <p class="text" :class="{ 'current': currentLineNum === index }" v-for="(line, index) in currentLyric.lines"
+                :key="line.num">
+                {{ line.txt }}
+              </p>
+            </div>
+          </div>
+        </Scroll>
       </div>
       <div class="bottom">
         <div class="progress-wrapper">
@@ -60,21 +70,22 @@ import useFavorite from './useFavorite'
 import { formatTime } from '@/assets/js/util'
 
 import ProgressBar from './ProgressBar.vue'
+import Scroll from '../base/scroll/Scroll.vue'
 import { PLAY_MODE } from '../../assets/js/constant'
 import useCd from './useCd'
 import useLyric from './useLyric'
-
-// hooks
-const { changeMode, modeIcon } = useMode()
-const { getFavoriteIcon, toggleFavorite } = useFavorite()
-const { cdCls, cdImageRef, cdRef } = useCd()
-useLyric()
 
 let progressChanging = false
 
 const audioRef = ref<HTMLAudioElement | null>(null)
 const songReady = ref(false)
 const currentTime = ref(0)
+
+// hooks
+const { changeMode, modeIcon } = useMode()
+const { getFavoriteIcon, toggleFavorite } = useFavorite()
+const { cdCls, cdImageRef, cdRef } = useCd()
+const { currentLyric, currentLineNum, playLyric, lyricListRef, lyricScrollRef, stopLyric } = useLyric({ songReady, currentTime })
 
 // pinia
 const store = useStore()
@@ -101,6 +112,10 @@ const progress = computed(() => {
 watch(currentSong, (newSong) => {
   if (!newSong.id || !newSong.url) return
 
+  stopLyric()
+  currentLyric.value = null
+  currentLineNum.value = 0
+
   currentTime.value = 0
   songReady.value = false
   const audioEl = audioRef.value
@@ -111,13 +126,22 @@ watch(currentSong, (newSong) => {
 watch(playing, (newPlaying) => {
   if (!songReady.value) return
   const audioEl = audioRef.value
-  newPlaying ? audioEl?.play() : audioEl?.pause()
+  if (newPlaying) {
+    audioEl?.play()
+    playLyric()
+  } else {
+    audioEl?.pause()
+    stopLyric()
+  }
+  // newPlaying ? audioEl?.play() : audioEl?.pause()
 })
 
 // methods
 function onProgressChanging(progress: number) {
   progressChanging = true
   currentTime.value = currentSong.value.duration * progress
+  playLyric()
+  stopLyric()
 }
 
 function onProgressChanged(progress: number) {
@@ -126,6 +150,7 @@ function onProgressChanged(progress: number) {
   if (!playing.value) {
     store.setPlayingState(true)
   }
+  playLyric()
 }
 
 function togglePlay() {
@@ -176,6 +201,7 @@ function pause() {
 function ready() {
   if (songReady.value) return
   songReady.value = true
+  playLyric()
 }
 
 function error() {

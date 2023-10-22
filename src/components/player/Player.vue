@@ -1,5 +1,5 @@
 <template>
-  <div class="player">
+  <div class="player" v-show="playlist.length">
     <div class="normal-player" v-show="fullScreen">
       <div class="background">
         <img :src="currentSong.pic">
@@ -69,23 +69,27 @@
         </div>
       </div>
     </div>
+    <MiniPlayer></MiniPlayer>
     <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+
+import { formatTime } from '@/assets/js/util'
+import { PLAY_MODE } from '../../assets/js/constant'
+
 import useStore from '../../stores/store'
 import useMode from './useMode'
 import useFavorite from './useFavorite'
-import { formatTime } from '@/assets/js/util'
-
-import ProgressBar from './ProgressBar.vue'
-import Scroll from '../base/scroll/Scroll.vue'
-import { PLAY_MODE } from '../../assets/js/constant'
 import useCd from './useCd'
 import useLyric from './useLyric'
 import useMiddleInteractive from './useMiddleInteractive'
+
+import MiniPlayer from './MiniPlayer.vue'
+import ProgressBar from './ProgressBar.vue'
+import Scroll from '../base/scroll/Scroll.vue'
 
 let progressChanging = false
 

@@ -16,13 +16,13 @@
           <div class="icon i-left">
             <i class="icon-sequence"></i>
           </div>
-          <div class="icon i-left">
+          <div class="icon i-left" :class="disableCls">
             <i @click="prev" class="icon-prev"></i>
           </div>
-          <div class="icon i-center">
+          <div class="icon i-center" :class="disableCls">
             <i @click="togglePlay" :class="playIcon"></i>
           </div>
-          <div class="icon i-right">
+          <div class="icon i-right" :class="disableCls">
             <i @click="next" class="icon-next"></i>
           </div>
           <div class="icon i-right">
@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @pause="pause"></audio>
+    <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error"></audio>
   </div>
 </template>
 
@@ -47,31 +47,38 @@ const currentSong = computed(() => store.currentSong)
 const playing = computed(() => store.playing)
 const currentIndex = computed(() => store.currentIndex)
 const playlist = computed(() => store.playList)
+const songReady = ref(false)
 
 const playIcon = computed(() => {
   return playing.value ? 'icon-pause' : 'icon-play'
+})
+const disableCls = computed(() => {
+  return songReady.value ? '' : 'disable'
 })
 
 watch(currentSong, (newSong) => {
   if (!newSong.id || !newSong.url) return
 
+  songReady.value = false
   const audioEl = audioRef.value
   audioEl!.src = newSong.url
   audioEl!.play()
 })
 
 watch(playing, (newPlaying) => {
+  if (!songReady.value) return
   const audioEl = audioRef.value
   newPlaying ? audioEl?.play() : audioEl?.pause()
 })
 
 function togglePlay() {
+  if (!songReady.value) return
   store.setPlayingState(!playing.value)
 }
 
 function prev() {
   const list = playlist.value
-  if (!list.length) return
+  if (!songReady.value || !list.length) return
 
   if (list.length === 1) {
     loop()
@@ -89,7 +96,7 @@ function prev() {
 
 function next() {
   const list = playlist.value
-  if (!list.length) return
+  if (!songReady.value || !list.length) return
 
   if (list.length === 1) {
     loop()
@@ -107,6 +114,15 @@ function next() {
 
 function pause() {
   store.setPlayingState(false)
+}
+
+function ready() {
+  if (songReady.value) return
+  songReady.value = true
+}
+
+function error() {
+  songReady.value = true
 }
 
 function loop() {

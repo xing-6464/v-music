@@ -62,11 +62,13 @@ import { formatTime } from '@/assets/js/util'
 import ProgressBar from './ProgressBar.vue'
 import { PLAY_MODE } from '../../assets/js/constant'
 import useCd from './useCd'
+import useLyric from './useLyric'
 
 // hooks
 const { changeMode, modeIcon } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls, cdImageRef, cdRef } = useCd()
+useLyric()
 
 let progressChanging = false
 

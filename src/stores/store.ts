@@ -23,6 +23,14 @@ const useStore = defineStore('store', {
     },
   },
   actions: {
+    addSongLyric({ song, lyric }: { song: Song; lyric: string }) {
+      this.sequencesList.map((item) => {
+        if (item.mid === song.mid) {
+          item.lyric = lyric
+        }
+        return item
+      })
+    },
     changeMode(mode: number) {
       const currentId = this.currentSong.id
       if (mode === PLAY_MODE.random) {

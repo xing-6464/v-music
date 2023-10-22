@@ -12,6 +12,13 @@
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
       <div class="bottom">
+        <div class="progress-wrapper">
+          <span class="time time-l">{{ formatTime(currentTime) }}</span>
+          <div class="progress-bar-wrapper">
+            <ProgressBar :progress="progress"></ProgressBar>
+          </div>
+          <span class="time time-r">{{ formatTime(currentSong.duration) }}</span>
+        </div>
         <div class="operators">
           <div class="icon i-left">
             <i @click="changeMode" :class="modeIcon"></i>
@@ -26,12 +33,12 @@
             <i @click="next" class="icon-next"></i>
           </div>
           <div class="icon i-right">
-            <i class="icon-not-favorite"></i>
+            <i @click="toggleFavorite(currentSong)" :class="getFavoriteIcon(currentSong)"></i>
           </div>
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error"></audio>
+    <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error" @timeupdate="updateTime"></audio>
   </div>
 </template>
 
@@ -39,12 +46,18 @@
 import { computed, ref, watch } from 'vue'
 import useStore from '../../stores/store'
 import useMode from './useMode'
+import useFavorite from './useFavorite'
+import { formatTime } from '@/assets/js/util'
+
+import ProgressBar from './ProgressBar.vue'
 
 // hooks
 const { changeMode, modeIcon } = useMode()
+const { getFavoriteIcon, toggleFavorite } = useFavorite()
 
 const audioRef = ref<HTMLAudioElement | null>(null)
 const songReady = ref(false)
+const currentTime = ref(0)
 
 // pinia
 const store = useStore()
@@ -61,12 +74,16 @@ const playIcon = computed(() => {
 const disableCls = computed(() => {
   return songReady.value ? '' : 'disable'
 })
+const progress = computed(() => {
+  return currentTime.value / currentSong.value.duration
+})
 
 
 // watch
 watch(currentSong, (newSong) => {
   if (!newSong.id || !newSong.url) return
 
+  currentTime.value = 0
   songReady.value = false
   const audioEl = audioRef.value
   audioEl!.src = newSong.url
@@ -132,6 +149,10 @@ function ready() {
 
 function error() {
   songReady.value = true
+}
+
+function updateTime(e: any) {
+  currentTime.value = e.target.currentTime
 }
 
 function loop() {

@@ -15,7 +15,8 @@
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
-            <ProgressBar :progress="progress"></ProgressBar>
+            <ProgressBar :progress="progress" @progress-changing="onProgressChanging"
+              @progress-changed="onProgressChanged"></ProgressBar>
           </div>
           <span class="time time-r">{{ formatTime(currentSong.duration) }}</span>
         </div>
@@ -38,7 +39,7 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error" @timeupdate="updateTime"></audio>
+    <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>
 
@@ -50,10 +51,13 @@ import useFavorite from './useFavorite'
 import { formatTime } from '@/assets/js/util'
 
 import ProgressBar from './ProgressBar.vue'
+import { PLAY_MODE } from '../../assets/js/constant';
 
 // hooks
 const { changeMode, modeIcon } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
+
+let progressChanging = false
 
 const audioRef = ref<HTMLAudioElement | null>(null)
 const songReady = ref(false)
@@ -66,6 +70,7 @@ const currentSong = computed(() => store.currentSong)
 const playing = computed(() => store.playing)
 const currentIndex = computed(() => store.currentIndex)
 const playlist = computed(() => store.playList)
+const playMode = computed(() => store.playMode)
 
 // computed
 const playIcon = computed(() => {
@@ -97,6 +102,19 @@ watch(playing, (newPlaying) => {
 })
 
 // methods
+function onProgressChanging(progress: number) {
+  progressChanging = true
+  currentTime.value = currentSong.value.duration * progress
+}
+
+function onProgressChanged(progress: number) {
+  progressChanging = false
+  audioRef.value!.currentTime = currentTime.value = currentSong.value.duration * progress
+  if (!playing.value) {
+    store.setPlayingState(true)
+  }
+}
+
 function togglePlay() {
   if (!songReady.value) return
   store.setPlayingState(!playing.value)
@@ -152,17 +170,29 @@ function error() {
 }
 
 function updateTime(e: any) {
-  currentTime.value = e.target.currentTime
+  if (!progressChanging) {
+    currentTime.value = e.target.currentTime
+  }
 }
 
 function loop() {
   const audioEl = audioRef.value
   audioEl!.currentTime = 0
   audioEl!.play()
+  store.setPlayingState(true)
 }
 
 function goBack() {
   store.setFullScreen(false)
+}
+
+function end() {
+  currentTime.value = 0
+  if (playMode.value === PLAY_MODE.loop) {
+    loop()
+  } else {
+    next()
+  }
 }
 </script>
 

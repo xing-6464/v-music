@@ -69,7 +69,7 @@
         </div>
       </div>
     </div>
-    <MiniPlayer></MiniPlayer>
+    <MiniPlayer :progress="progress" :toggle-play="togglePlay"></MiniPlayer>
     <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>

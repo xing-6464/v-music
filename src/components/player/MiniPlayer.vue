@@ -6,9 +6,14 @@
           <img ref="cdImageRef" :src="currentSong.pic" :class="cdCls" width="40" height="40" />
         </div>
       </div>
-      <div>
+      <div class="slider-wrapper">
         <h2 class="name">{{ currentSong.name }}</h2>
         <p class="desc">{{ currentSong.singer }}</p>
+      </div>
+      <div class="control">
+        <ProgressCircle :radius="32" :progress="props.progress">
+          <i class="icon-mini" :class="miniPlayIcon" @click.stop="props.togglePlay"></i>
+        </ProgressCircle>
       </div>
     </div>
   </transition>
@@ -19,12 +24,23 @@ import { computed } from 'vue'
 import useStore from '@/stores/store'
 import useCd from './useCd'
 
+import ProgressCircle from './ProgressCircle.vue'
+
+const props = withDefaults(defineProps<{ progress: number, togglePlay: Function }>(), {
+  progress: 0
+})
+
 const store = useStore()
 
 const fullScreen = computed(() => store.fullScreen)
 const currentSong = computed(() => store.currentSong)
+const playing = computed(() => store.playing)
 
 const { cdCls, cdImageRef, cdRef } = useCd()
+
+const miniPlayIcon = computed(() => {
+  return playing.value ? 'icon-pause-mini' : 'icon-play-mini'
+})
 
 function showNormalPlayer() {
   store.setFullScreen(true)

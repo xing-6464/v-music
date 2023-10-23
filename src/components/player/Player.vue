@@ -45,7 +45,7 @@
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
-            <ProgressBar :progress="progress" @progress-changing="onProgressChanging"
+            <ProgressBar ref="barRef" :progress="progress" @progress-changing="onProgressChanging"
               @progress-changed="onProgressChanged"></ProgressBar>
           </div>
           <span class="time time-r">{{ formatTime(currentSong.duration) }}</span>
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue';
 
 import { formatTime } from '@/assets/js/util'
 import { PLAY_MODE } from '../../assets/js/constant'
@@ -96,6 +96,7 @@ let progressChanging = false
 const audioRef = ref<HTMLAudioElement | null>(null)
 const songReady = ref(false)
 const currentTime = ref(0)
+const barRef = ref<HTMLElement | null>(null)
 
 // hooks
 const { changeMode, modeIcon } = useMode()
@@ -153,6 +154,13 @@ watch(playing, (newPlaying) => {
     stopLyric()
   }
   // newPlaying ? audioEl?.play() : audioEl?.pause()
+})
+
+watch(fullScreen, async (newFullScreen) => {
+  if (newFullScreen) {
+    await nextTick()
+    barRef.value.setOffset(progress.value)
+  }
 })
 
 // methods

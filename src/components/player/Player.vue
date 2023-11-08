@@ -159,7 +159,7 @@ watch(playing, (newPlaying) => {
 watch(fullScreen, async (newFullScreen) => {
   if (newFullScreen) {
     await nextTick()
-    barRef.value.setOffset(progress.value)
+    barRef.value!.setOffset(progress.value)
   }
 })
 

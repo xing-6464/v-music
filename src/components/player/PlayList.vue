@@ -11,15 +11,18 @@
             </h1>
           </div>
           <scroll class="list-content" ref="scrollRef">
-            <ul ref="listRef">
+            <transition-group tag="ul" name="list" ref="listRef">
               <li class="item" v-for="song in sequenceList" :key="song.id" @click="selectItem(song)">
                 <i class="current" :class="getCurrentIcon(song)"></i>
                 <span class="text">{{ song.name }}</span>
                 <span class="favorite" @click.stop="toggleFavorite(song)">
                   <i :class="getFavoriteIcon(song)"></i>
                 </span>
+                <span class="delete" @click.stop="removeSong(song)">
+                  <i class="icon-delete"></i>
+                </span>
               </li>
-            </ul>
+            </transition-group>
           </scroll>
           <div class="list-footer" @click="hide">
             <span>关闭</span>
@@ -41,7 +44,7 @@ import type Scroller from '@better-scroll/core/dist/types/scroller/Scroller'
 
 const visible = ref(false)
 const scrollRef = ref<Scroller | null>(null)
-const listRef = ref<HTMLUListElement | null>(null)
+const listRef = ref<HTMLElement | null>(null)
 
 const store = useStore()
 const playlist = computed(() => store.playList)
@@ -77,6 +80,11 @@ async function show() {
   scrollToCurrent()
 }
 
+function removeSong(song: Song) {
+  store.removeSong(song)
+}
+
+
 function selectItem(song: Song) {
   const index = playlist.value.findIndex(item => song.id === item.id)
 
@@ -93,7 +101,7 @@ function scrollToCurrent() {
     return currentSong.value.id === song.id
   })
 
-  const target = listRef.value?.children[index]
+  const target = listRef.value!.$el.children[index]
 
   scrollRef.value!.scroll.scrollToElement(target, 300)
 }

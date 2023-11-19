@@ -5,6 +5,10 @@ import type { Song } from '@/views/types'
 import { shuffle } from '@/assets/js/util'
 import { load } from '@/assets/js/array-store'
 
+function findIndex(list: Song[], song: Song) {
+  return list.findIndex((item) => item.id === song.id)
+}
+
 const useStore = defineStore('store', {
   state: (): StoreState => {
     return {
@@ -23,6 +27,25 @@ const useStore = defineStore('store', {
     },
   },
   actions: {
+    removeSong(song: Song): void {
+      const sequencesList = this.sequencesList.slice()
+      const playList = this.playList.slice()
+
+      const sequenceIndex = findIndex(sequencesList, song)
+      const playIndex = findIndex(playList, song)
+
+      sequencesList.splice(sequenceIndex, 1)
+      playList.splice(playIndex, 1)
+
+      let currentIndex = this.currentIndex
+      if (playIndex < currentIndex || currentIndex === playList.length) {
+        currentIndex--
+      }
+
+      this.setSequenceList(sequencesList)
+      this.setPlayList(playList)
+      this.setCurrentIndex(currentIndex)
+    },
     addSongLyric({ song, lyric }: { song: Song; lyric: string }) {
       this.sequencesList.map((item) => {
         if (item.mid === song.mid) {

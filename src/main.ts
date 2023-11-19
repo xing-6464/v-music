@@ -19,7 +19,13 @@ pinia.use(
   PiniaLogger({
     expanded: true,
     disabled: import.meta.env.MODE === 'production',
-    actions: ['selectPlay', 'randomPlay', 'changeMode', 'addSongLyric'],
+    actions: [
+      'selectPlay',
+      'randomPlay',
+      'changeMode',
+      'addSongLyric',
+      'removeSong',
+    ],
   })
 )
 

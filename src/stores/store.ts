@@ -33,6 +33,7 @@ const useStore = defineStore('store', {
 
       const sequenceIndex = findIndex(sequencesList, song)
       const playIndex = findIndex(playList, song)
+      if (sequenceIndex < 0 || playIndex < 0) return
 
       sequencesList.splice(sequenceIndex, 1)
       playList.splice(playIndex, 1)

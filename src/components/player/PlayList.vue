@@ -18,7 +18,7 @@
                 <span class="favorite" @click.stop="toggleFavorite(song)">
                   <i :class="getFavoriteIcon(song)"></i>
                 </span>
-                <span class="delete" @click.stop="removeSong(song)">
+                <span class="delete" :class="{ 'disable': removing }" @click.stop="removeSong(song)">
                   <i class="icon-delete"></i>
                 </span>
               </li>
@@ -43,6 +43,7 @@ import type { Song } from '@/views/types'
 import type Scroller from '@better-scroll/core/dist/types/scroller/Scroller'
 
 const visible = ref(false)
+const removing = ref(false)
 const scrollRef = ref<Scroller | null>(null)
 const listRef = ref<HTMLElement | null>(null)
 
@@ -55,8 +56,8 @@ const currentSong = computed(() => store.currentSong)
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { modeIcon, changeMode, modeText } = useMode()
 
-watch(currentSong, async () => {
-  if (!visible.value) return
+watch(currentSong, async (newSong) => {
+  if (!visible.value || !newSong.id) return
 
   await nextTick()
   scrollToCurrent()
@@ -81,7 +82,14 @@ async function show() {
 }
 
 function removeSong(song: Song) {
+  if (removing.value === true) return
+
+  removing.value = true
   store.removeSong(song)
+
+  setTimeout(() => {
+    removing.value = false
+  }, 300)
 }
 
 
@@ -100,6 +108,10 @@ function scrollToCurrent() {
   const index = sequenceList.value.findIndex((song) => {
     return currentSong.value.id === song.id
   })
+
+  if (index === -1) {
+    return
+  }
 
   const target = listRef.value!.$el.children[index]
 

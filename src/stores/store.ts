@@ -27,6 +27,12 @@ const useStore = defineStore('store', {
     },
   },
   actions: {
+    clearSongList() {
+      this.setSequenceList([])
+      this.setPlayList([])
+      this.setCurrentIndex(0)
+      this.setPlayingState(false)
+    },
     removeSong(song: Song): void {
       const sequencesList = this.sequencesList.slice()
       const playList = this.playList.slice()
@@ -46,6 +52,9 @@ const useStore = defineStore('store', {
       this.setSequenceList(sequencesList)
       this.setPlayList(playList)
       this.setCurrentIndex(currentIndex)
+      if (!playList.length) {
+        this.setPlayingState(false)
+      }
     },
     addSongLyric({ song, lyric }: { song: Song; lyric: string }) {
       this.sequencesList.map((item) => {

@@ -8,6 +8,9 @@
               <i class="icon" :class="modeIcon" @click="changeMode">
               </i>
               <span class="text">{{ modeText }}</span>
+              <span class="clear" @click="showConfirm">
+                <i class="icon-clear"></i>
+              </span>
             </h1>
           </div>
           <scroll class="list-content" ref="scrollRef">
@@ -28,6 +31,7 @@
             <span>关闭</span>
           </div>
         </div>
+        <confirm ref="confirmRef" @confirm="confirmClear" text="是否清空播放列表" confirm-btn-text="清空"></confirm>
       </div>
     </transition>
   </teleport>
@@ -35,15 +39,18 @@
 
 <script setup lang="ts">
 import Scroll from '@/components/base/scroll/Scroll.vue'
+import Confirm from '@/components/base/confirm/confirm.vue'
 import { computed, ref, nextTick, watch } from 'vue'
 import useStore from '@/stores/store'
 import useMode from './useMode'
 import useFavorite from './useFavorite'
 import type { Song } from '@/views/types'
 import type Scroller from '@better-scroll/core/dist/types/scroller/Scroller'
+import confirm from '@/components/base/confirm/confirm.vue';
 
 const visible = ref(false)
 const removing = ref(false)
+const confirmRef = ref<HTMLElement | null>(null)
 const scrollRef = ref<Scroller | null>(null)
 const listRef = ref<HTMLElement | null>(null)
 
@@ -86,7 +93,9 @@ function removeSong(song: Song) {
 
   removing.value = true
   store.removeSong(song)
-
+  if (!playlist.value.length) {
+    hide()
+  }
   setTimeout(() => {
     removing.value = false
   }, 300)
@@ -116,6 +125,15 @@ function scrollToCurrent() {
   const target = listRef.value!.$el.children[index]
 
   scrollRef.value!.scroll.scrollToElement(target, 300)
+}
+
+function showConfirm() {
+  confirmRef.value?.show()
+}
+
+function confirmClear() {
+  store.clearSongList()
+  hide()
 }
 
 defineExpose({

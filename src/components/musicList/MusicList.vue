@@ -77,7 +77,8 @@ const bgImageStyle = computed<CSSProperties>(() => {
   return { backgroundImage: `url(${props.pic})`, zIndex, paddingTop, height, transform: `scale(${scale})translateZ(${translateZ})` }
 })
 const scrollStyle = computed<CSSProperties>(() => {
-  return { top: `${imageHeight.value}px` }
+  const bottom = store.playList.length ? '60px' : ''
+  return { top: `${imageHeight.value}px`, bottom }
 })
 const filterStyle = computed<CSSProperties>(() => {
   let blur = 0

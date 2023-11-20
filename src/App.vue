@@ -1,13 +1,26 @@
 <script setup lang="ts">
+import { computed, type CSSProperties } from 'vue'
 import MHeader from './components/header/Header.vue'
 import Tab from './components/tab/Tab.vue'
 import Player from './components/player/Player.vue'
+import useStore from './stores/store'
+
+const store = useStore()
+
+const viewStyle = computed<CSSProperties>(() => {
+  const bottom = store.playList.length ? '60px' : ''
+  return {
+    bottom
+  }
+})
+
+
 </script>
 
 <template>
   <m-header></m-header>
   <Tab></Tab>
-  <router-view></router-view>
+  <router-view :style="viewStyle"></router-view>
   <Player></Player>
 </template>
 

@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { computed, ref, type CSSProperties, onMounted } from 'vue'
 import SongList from '../base/songList/SongList.vue'
-import Scroll from '../base/scroll/Scroll.vue'
+import Scroll from '@/components/wrapScroll/index'
 import type { MusicListProps } from './types.ts'
 import { useRouter } from 'vue-router'
 import useStore from '@/stores/store'

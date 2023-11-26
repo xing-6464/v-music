@@ -15,7 +15,7 @@ import { getSingerList } from '@/service/singer'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Singer, Singers } from './types'
-import IndexList from '../components/base/indexList/IndexList.vue'
+import IndexList from '../components/indexList/IndexList.vue'
 import storage from 'good-storage'
 import { SINGER_KEY } from '../assets/js/constant'
 
@@ -49,4 +49,4 @@ function cacheSinger(singer: Singer) {
   top: 88px;
   bottom: 0;
 }
-</style>../components/indexList/IndexList.vue
+</style>../components/indexList/IndexList.vue../components/indexList/IndexList.vue

@@ -22,7 +22,7 @@ const rootRef = ref<HTMLElement | null>(null)
 const scroll = useScroll(rootRef, props, emits)
 
 defineExpose({
-  scroll
+  scroll,
 })
 
 </script>

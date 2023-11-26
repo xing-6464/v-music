@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import Scroll from '../scroll/Scroll.vue'
+import Scroll from '@/components/wrapScroll/index'
 import useFixed from './useFixed'
 import useShortcut from './useShortcut'
 import type { IndexListProps } from './types'

@@ -36,7 +36,7 @@ import { getRecommend } from '../service/recommend'
 
 // 组件
 import Slider from '../components/base/slider/Slider.vue'
-import Scroll from '../components/base/scroll/Scroll.vue'
+import Scroll from '@/components/wrapScroll/index'
 
 import type { Sliders, Albums } from './types'
 

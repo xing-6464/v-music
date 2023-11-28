@@ -3,12 +3,18 @@
     <MusicList :songs="songs" :title="title" :pic="pic" :loading="loading"></MusicList>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { ALBUM_KEY } from '@/assets/js/constant'
-import createDetailComponent from '@/assets/js/create-detail-component'
+import MusicList from '@/components/musicList/MusicList.vue'
 import { getAlbum } from '../service/recommend'
+import useDetailComponent from './useDetailCompoent'
+import type { Singer } from './types'
 
-export default createDetailComponent('album', ALBUM_KEY, getAlbum)
+const props = defineProps<{ data: Singer }>()
+
+const { songs, title, pic, loading } = useDetailComponent(props, ALBUM_KEY, getAlbum)
+console.log(songs)
+
 </script>
 
 <style lang="scss" scoped>

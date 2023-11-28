@@ -76,7 +76,6 @@ function cacheAlbum(album: Albums) {
 
 onMounted(async () => {
   const result = await getRecommend()
-  console.log(result)
   sliders.value = result.sliders
   albums.value = result.albums
 })

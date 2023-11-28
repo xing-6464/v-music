@@ -4,12 +4,18 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { getSingerDetail } from '@/service/singer'
+import type { Singer } from './types'
+import MusicList from '../components/musicList/MusicList.vue'
 import { SINGER_KEY } from '../assets/js/constant'
-import createDetailComponent from '@/assets/js/create-detail-component'
+import useDetailComponent from './useDetailCompoent'
 
-export default createDetailComponent('singer-detail', SINGER_KEY, getSingerDetail)
+
+const props = defineProps<{ data: Singer }>()
+
+const { songs, title, pic, loading } = useDetailComponent(props, SINGER_KEY, getSingerDetail)
+
 </script>
 
 <style lang="scss" scoped>
@@ -22,4 +28,4 @@ export default createDetailComponent('singer-detail', SINGER_KEY, getSingerDetai
   right: 0;
   background: $color-background;
 }
-</style>../assets/ts/constant@/assets/ts/create-detail-component
+</style>

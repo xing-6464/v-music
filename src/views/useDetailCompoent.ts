@@ -81,7 +81,7 @@ export default function useDetailComponent(
   const songs = ref<Song[]>([])
   const loading = ref<boolean>(true)
 
-  const computedSinger = computed(() => {
+  const computedData = computed(() => {
     let ret = null
     const data = props.data
     if (data) {
@@ -99,23 +99,23 @@ export default function useDetailComponent(
   })
 
   const pic = computed(() => {
-    const computedSingerVal = computedSinger.value
-    return computedSingerVal && computedSingerVal.pic
+    const data = computedData.value
+    return data && data.pic
   })
   const title = computed(() => {
-    const computedSingerVal = computedSinger.value
-    return computedSingerVal && computedSingerVal.name
+    const data = computedData.value
+    return data && (data.name || data.title)
   })
 
   onMounted(async () => {
-    const computedSingerVal = computedSinger.value
-    if (!computedSingerVal) {
+    const data = computedData.value
+    if (!data) {
       const path = route.matched[0].path
       router.push({
         path,
       })
     }
-    const result = await fetch(computedSingerVal)
+    const result = await fetch(data)
     songs.value = await processSongs(result.songs)
     loading.value = false
   })

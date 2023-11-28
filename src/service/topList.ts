@@ -1,5 +1,12 @@
 import { get } from './base'
 
-export default function getTopList() {
+export function getTopList() {
   return get('/api/getTopList')
+}
+
+export function getTopDetail(top: { [index: string]: string }) {
+  return get('/api/getTopDetail', {
+    id: top.id,
+    period: top.period,
+  })
 }

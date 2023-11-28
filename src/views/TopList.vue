@@ -15,23 +15,37 @@
         </li>
       </ul>
     </scroll>
-    <!-- <router-view v-slot="{ Component }">
+    <router-view v-slot="{ Component }">
       <transition appear name="slide">
         <component :is="Component" :data="selectedTop" />
       </transition>
-    </router-view> -->
+    </router-view>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import Scroll from '@/components/wrapScroll'
-import getTopList from '@/service/topList'
+import { getTopList } from '@/service/topList'
+import { useRouter } from 'vue-router'
+import { TOP_KEY } from '@/assets/js/constant'
+import storage from 'good-storage'
 
 const topList = ref()
+const selectedTop = ref<null | { [key: string]: string }>(null)
 const loading = ref(true)
 
+const router = useRouter()
+
 function selectItem(item: any) {
+  selectedTop.value = item
+  router.push({
+    path: `/top-list/${item.id}`
+  })
+}
+
+function cacheTop(item: any) {
+  storage.session.set(TOP_KEY, top)
 
 }
 

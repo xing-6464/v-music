@@ -7,7 +7,7 @@
 import { ALBUM_KEY } from '@/assets/js/constant'
 import MusicList from '@/components/musicList/MusicList.vue'
 import { getAlbum } from '../service/recommend'
-import useDetailComponent from './useDetailCompoent'
+import useDetailComponent from './useDetailComponent'
 import type { Singer } from './types'
 
 const props = defineProps<{ data: Singer }>()

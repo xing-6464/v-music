@@ -5,6 +5,7 @@ import TopList from '../views/TopList.vue'
 import Search from '../views/Search.vue'
 import SingerDetail from '../views/SingerDetail.vue'
 import Album from '@/views/Album.vue'
+import TopDetail from '@/views/TopDetail.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -36,6 +37,12 @@ const router = createRouter({
     {
       path: '/top-list',
       component: TopList,
+      children: [
+        {
+          path: ':id',
+          component: TopDetail,
+        },
+      ],
     },
     {
       path: '/search',

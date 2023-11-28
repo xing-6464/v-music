@@ -69,7 +69,7 @@ type Fetch = typeof getSingerDetail | typeof getAlbum
 // }
 
 export default function useDetailComponent(
-  props: { data: Singer | Albums },
+  props: { data: Singer | Albums | { [index: string]: string } },
   key: string,
   fetch: Fetch
 ) {

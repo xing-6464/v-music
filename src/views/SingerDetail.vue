@@ -9,7 +9,7 @@ import { getSingerDetail } from '@/service/singer'
 import type { Singer } from './types'
 import MusicList from '../components/musicList/MusicList.vue'
 import { SINGER_KEY } from '../assets/js/constant'
-import useDetailComponent from './useDetailCompoent'
+import useDetailComponent from './useDetailComponent'
 
 
 const props = defineProps<{ data: Singer }>()

@@ -1,6 +1,9 @@
 <template>
   <ul class="song-list">
     <li class="item" v-for="(song, index) in props.songs" :key="song.id" @click="selectItem(song, index)">
+      <div class="rank" v-if="rank">
+        <span :class="getRankCls(index)">{{ getRankText(index) }}</span>
+      </div>
       <div class="content">
         <h2 class="name">{{ song.name }}</h2>
         <p class="desc">{{ getDesc(song) }}</p>
@@ -12,7 +15,7 @@
 <script setup lang="ts">
 import type { Song } from '../../../views/types'
 
-const props = defineProps<{ songs: Song[] }>()
+const props = defineProps<{ songs: Song[], rank: boolean }>()
 const emits = defineEmits<{ select: [object: { song: Song, index: number }] }>()
 
 
@@ -22,6 +25,20 @@ function getDesc(song: Song) {
 
 function selectItem(song: Song, index: number) {
   emits('select', { song, index })
+}
+
+function getRankCls(index: number) {
+  if (index <= 2) {
+    return `icon icon${index}`
+  } else {
+    return 'text'
+  }
+}
+
+function getRankText(index: number) {
+  if (index > 2) {
+    return index + 1
+  }
 }
 
 </script>

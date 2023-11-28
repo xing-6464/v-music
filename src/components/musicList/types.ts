@@ -6,4 +6,5 @@ export type MusicListProps = {
   pic: string
   loading: boolean
   noResultText: string
+  rank: boolean
 }

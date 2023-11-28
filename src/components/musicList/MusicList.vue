@@ -16,7 +16,7 @@
     <Scroll class="list" :style="scrollStyle" v-loading="props.loading" v-no-result="noResult" :probe-type="3"
       @scroll="onScroll">
       <div class="song-list-wrapper">
-        <song-list :songs="props.songs" @select="selectItem"></song-list>
+        <song-list :songs="props.songs" @select="selectItem" :rank="rank"></song-list>
       </div>
     </Scroll>
   </div>
@@ -26,7 +26,7 @@
 import { computed, ref, type CSSProperties, onMounted } from 'vue'
 import SongList from '../base/songList/SongList.vue'
 import Scroll from '@/components/wrapScroll/index'
-import type { MusicListProps } from './types.ts'
+import type { MusicListProps } from './types'
 import { useRouter } from 'vue-router'
 import useStore from '@/stores/store'
 import type { Song } from '@/views/types'
@@ -35,7 +35,7 @@ const RESERVED_HEIGHT = 40
 
 const props = withDefaults(defineProps<MusicListProps>(), {
   songs: () => [],
-  noResultText: '抱歉，没有找到默认的歌曲'
+  noResultText: '抱歉，没有找到默认的歌曲',
 })
 
 const store = useStore()

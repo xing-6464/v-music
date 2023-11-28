@@ -1,19 +1,18 @@
 <template>
-  <div class="singer-detail">
+  <div class="album">
     <MusicList :songs="songs" :title="title" :pic="pic" :loading="loading"></MusicList>
   </div>
 </template>
-
 <script lang="ts">
-import { getSingerDetail } from '@/service/singer'
-import { SINGER_KEY } from '../assets/js/constant'
+import { ALBUM_KEY } from '@/assets/js/constant'
 import createDetailComponent from '@/assets/js/create-detail-component'
+import { getAlbum } from '../service/recommend'
 
-export default createDetailComponent('singer-detail', SINGER_KEY, getSingerDetail)
+export default createDetailComponent('album', ALBUM_KEY, getAlbum)
 </script>
 
 <style lang="scss" scoped>
-.singer-detail {
+.album {
   position: fixed;
   z-index: 10;
   top: 0;
@@ -22,4 +21,4 @@ export default createDetailComponent('singer-detail', SINGER_KEY, getSingerDetai
   right: 0;
   background: $color-background;
 }
-</style>../assets/ts/constant@/assets/ts/create-detail-component
+</style>

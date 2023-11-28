@@ -4,7 +4,7 @@
     <!-- <RouterView :singer="selectedSinger"></RouterView> -->
     <RouterView v-slot="{ Component }">
       <Transition appear name="slide">
-        <component :is="Component" :singer="selectedSinger"></component>
+        <component :is="Component" :data="selectedSinger"></component>
       </Transition>
     </RouterView>
   </div>
@@ -49,4 +49,4 @@ function cacheSinger(singer: Singer) {
   top: 88px;
   bottom: 0;
 }
-</style>../components/indexList/IndexList.vue../components/indexList/IndexList.vue
+</style>../components/indexList/IndexList.vue../components/indexList/IndexList.vue../assets/ts/constant

@@ -10,7 +10,7 @@
         <div class="recommend-list">
           <h1 class="list-title" v-show="!loading">热门歌单列表</h1>
           <ul>
-            <li v-for="item in albums" class="item" :key="item.id">
+            <li v-for="item in albums" class="item" :key="item.id" @click="selectItem(item)">
               <div class="icon">
                 <img v-lazy="item.pic" width="60" height="60">
               </div>
@@ -27,12 +27,20 @@
         </div>
       </div>
     </Scroll>
+    <RouterView v-slot="{ Component }">
+      <Transition appear name="slide">
+        <component :is="Component" :data="selectAlbum"></component>
+      </Transition>
+    </RouterView>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
 import { getRecommend } from '../service/recommend'
+import { useRouter } from 'vue-router'
+import storage from 'good-storage'
+import { ALBUM_KEY } from '@/assets/js/constant'
 
 // 组件
 import Slider from '../components/base/slider/Slider.vue'
@@ -44,6 +52,9 @@ import type { Sliders, Albums } from './types'
 const sliders = ref<Sliders[]>([])
 // 歌单数据
 const albums = ref<Albums[]>([])
+const selectAlbum = ref<Albums | null>(null)
+
+const router = useRouter()
 
 const loadingText = ref('正在加载中...')
 
@@ -51,6 +62,17 @@ const loading = computed(() => {
   return !sliders.value.length && !albums.value.length
 })
 
+function selectItem(album: Albums) {
+  selectAlbum.value = album
+  cacheAlbum(album)
+  router.push({
+    path: `/recommend/${album.id}`
+  })
+}
+
+function cacheAlbum(album: Albums) {
+  storage.session.set(ALBUM_KEY, album)
+}
 
 onMounted(async () => {
   const result = await getRecommend()

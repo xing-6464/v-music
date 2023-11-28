@@ -1,12 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Recommend from '../views/Recommend.vue'
 import Singer from '../views/Singer.vue'
 import TopList from '../views/TopList.vue'
 import Search from '../views/Search.vue'
 import SingerDetail from '../views/SingerDetail.vue'
+import Album from '@/views/Album.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -15,6 +16,12 @@ const router = createRouter({
     {
       path: '/recommend',
       component: Recommend,
+      children: [
+        {
+          path: ':id',
+          component: Album,
+        },
+      ],
     },
     {
       path: '/singer',

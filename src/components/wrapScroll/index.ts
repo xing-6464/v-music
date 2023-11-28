@@ -7,11 +7,12 @@ import {
   renderSlot,
   watch,
   withCtx,
+  defineComponent,
 } from 'vue'
 import Scroll from '@/components/base/scroll/Scroll.vue'
 import useStore from '@/stores/store'
 
-export default {
+export default defineComponent({
   name: 'wrap-scroll',
   props: Scroll.props,
   emits: Scroll.emits,
@@ -48,4 +49,4 @@ export default {
       scroll,
     }
   },
-}
+})

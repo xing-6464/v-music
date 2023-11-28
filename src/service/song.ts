@@ -1,7 +1,7 @@
 import type { Song } from '@/views/types'
 import { get } from './base'
 
-export function processSongs(songs: { [key: string]: string }[]) {
+export function processSongs(songs: Song[]) {
   if (!songs.length) {
     return Promise.resolve(songs)
   }

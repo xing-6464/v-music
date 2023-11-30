@@ -1,4 +1,4 @@
-import { save } from '@/assets/js/array-store'
+import { remove, save } from '@/assets/js/array-store'
 import { SEARCH_KEY } from '@/assets/js/constant'
 import useStore from '@/stores/store'
 
@@ -20,7 +20,14 @@ export default function useSearchHistory() {
     store.setSearchHistory(searches)
   }
 
+  function deleteSearch(query: string) {
+    const searches = remove(SEARCH_KEY, (item) => item === query)
+
+    store.setSearchHistory(searches)
+  }
+
   return {
     saveSearch,
+    deleteSearch,
   }
 }

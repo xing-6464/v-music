@@ -15,16 +15,21 @@
 type SearchListProps = {
   searches: string[]
 }
+type SearchListEmits = {
+  select: [item: string]
+  delete: [item: string]
+}
 
 const props = defineProps<SearchListProps>()
+const emits = defineEmits<SearchListEmits>()
 
 
 function selectItem(item: string) {
-
+  emits('select', item)
 }
 
 function deleteItem(item: string) {
-
+  emits('delete', item)
 }
 
 </script>

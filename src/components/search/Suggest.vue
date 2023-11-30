@@ -1,5 +1,5 @@
 <template>
-  <div class="suggest" v-loading:[loadingText]="loading" v-no-result:[noResultText]="noResult">
+  <div ref="rootRef" class="suggest" v-loading:[loadingText]="loading" v-no-result:[noResultText]="noResult">
     <ul class="suggest-list">
       <li class="suggest-item" v-if="singer">
         <div class="icon">
@@ -19,17 +19,17 @@
           </p>
         </div>
       </li>
-      <div class="suggest-item"></div>
+      <div class="suggest-item" v-loading:[loadingText]="pullUpLoading"></div>
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Singer, Song } from '@/views/types'
-import { ref, watch, computed } from 'vue';
-import { search } from '../../service/search'
+import { ref, watch, computed } from 'vue'
+import { search } from '@/service/search'
 import { processSongs } from '@/service/song'
-
+import usePullUpLoad from '@/components/search/usePullUpLoad'
 
 type SuggestProps = {
   query: string
@@ -47,18 +47,33 @@ const page = ref(1)
 const loadingText = ref('')
 const noResultText = ref('抱歉，暂无搜索结果')
 
+const { isPullUpLoad, rootRef } = usePullUpLoad(searchMore)
+
 const noResult = computed(() => {
   return !singer.value && !songs.value.length && !hasMore.value
 })
 const loading = computed(() => {
   return !singer.value && !songs.value.length
 })
+const pullUpLoading = computed(() => {
+  return isPullUpLoad.value && hasMore.value
+})
+
 
 watch(() => props.query, async newQuery => {
   if (!newQuery) return
 
   await searchFirst()
 })
+
+async function searchMore() {
+  if (!hasMore.value) return
+
+  page.value++
+  const res = await search(props.query, page.value, props.showSinger)
+  songs.value = songs.value.concat(await processSongs(res.songs))
+  hasMore.value = res.hasMore
+}
 
 async function searchFirst() {
   page.value = 1

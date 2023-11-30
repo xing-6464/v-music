@@ -692,7 +692,7 @@ function registerSearch(app) {
       },
     }
 
-    post(url, data)
+    post(url, JSON.stringify(data))
       .then((response) => {
         const data = response.data
         if (data.code === ERR_OK) {

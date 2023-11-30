@@ -1,7 +1,7 @@
 import BScroll from '@better-scroll/core'
 import PullUp from '@better-scroll/pull-up'
 import ObserveDOM from '@better-scroll/observe-dom'
-import { onMounted, onUnmounted, ref, type Ref } from 'vue'
+import { onMounted, onUnmounted, ref, type ComputedRef, type Ref } from 'vue'
 
 type UsePullUpLoad = {
   scroll: Ref<BScroll | null>
@@ -13,7 +13,8 @@ BScroll.use(PullUp)
 BScroll.use(ObserveDOM)
 
 export default function usePullUpLoad(
-  requestData: () => Promise<any>
+  requestData: () => Promise<any>,
+  preventPullUpLoad: ComputedRef<boolean>
 ): UsePullUpLoad {
   const scroll = ref<BScroll | null>(null)
   const rootRef = ref<HTMLDivElement | null>(null)
@@ -32,6 +33,10 @@ export default function usePullUpLoad(
     scrollVal.on('pullingUp', pullingUpHandler)
 
     async function pullingUpHandler() {
+      if (preventPullUpLoad.value) {
+        scrollVal.finishPullUp()
+        return
+      }
       isPullUpLoad.value = true
 
       await requestData()

@@ -46,8 +46,8 @@ const hasMore = ref(true)
 const page = ref(1)
 const loadingText = ref('')
 const noResultText = ref('抱歉，暂无搜索结果')
+const manualLoading = ref(false)
 
-const { scroll, isPullUpLoad, rootRef } = usePullUpLoad(searchMore)
 
 const noResult = computed(() => {
   return !singer.value && !songs.value.length && !hasMore.value
@@ -58,7 +58,10 @@ const loading = computed(() => {
 const pullUpLoading = computed(() => {
   return isPullUpLoad.value && hasMore.value
 })
-
+const preventPullUpLoad = computed(() => {
+  return loading.value || manualLoading.value
+})
+const { scroll, isPullUpLoad, rootRef } = usePullUpLoad(searchMore, preventPullUpLoad)
 
 watch(() => props.query, async newQuery => {
   if (!newQuery) return
@@ -67,7 +70,7 @@ watch(() => props.query, async newQuery => {
 })
 
 async function searchMore() {
-  if (!hasMore.value) return
+  if (!hasMore.value || !props.query) return
 
   page.value++
   const res = await search(props.query, page.value, props.showSinger)
@@ -79,6 +82,8 @@ async function searchMore() {
 }
 
 async function searchFirst() {
+  if (!props.query) return
+
   page.value = 1
   songs.value = []
   singer.value = null
@@ -97,7 +102,9 @@ async function searchFirst() {
 async function makeItScrollable() {
   const scrollVal = scroll.value
   if (scrollVal && scrollVal.maxScrollY >= -1) {
+    manualLoading.value = true
     await searchMore()
+    manualLoading.value = false
   }
 }
 

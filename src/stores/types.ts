@@ -8,4 +8,5 @@ export type StoreState = {
   currentIndex: number
   fullScreen: boolean
   favoriteList: Song[]
+  searchHistory: string[]
 }

@@ -1,6 +1,6 @@
 import storage from 'good-storage'
 
-type Compare = (val: any, index?: number, obj?: any[]) => boolean
+type Compare<T = any> = (val: T, index?: number, obj?: T[]) => boolean
 
 function insertArray(
   arr: any[],

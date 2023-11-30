@@ -12,6 +12,12 @@
           </li>
         </ul>
       </div>
+      <div class="search-history" v-show="searchHistory.length">
+        <h1 class="title">
+          <span class="text">搜索历史</span>
+        </h1>
+        <search-list :searches="searchHistory"></search-list>
+      </div>
     </div>
     <div class="search-result" v-show="query">
       <suggest :query="query" @select-song="selectSong" @select-singer="selectSinger"></suggest>
@@ -25,15 +31,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+
+import storage from 'good-storage'
+import { useRouter } from 'vue-router'
+import useStore from '@/stores/store'
+import useSearchHistory from '../components/search/useSearchHistory';
+
 import SearchInput from '@/components/search/SearchInput.vue'
 import Suggest from '@/components/search/Suggest.vue'
-import useStore from '@/stores/store'
+import SearchList from '@/components/search/SearchList.vue'
 import { getHotKeys } from '@/service/search'
-import type { Singer, Song } from './types'
-import { useRouter } from 'vue-router'
-import storage from 'good-storage'
 import { SINGER_KEY } from '@/assets/js/constant'
+import type { Singer, Song } from './types'
 
 type HotKey = {
   key: string,
@@ -41,11 +51,14 @@ type HotKey = {
 }
 
 const router = useRouter()
+const store = useStore()
+const { saveSearch } = useSearchHistory()
 
 const query = ref<string>('')
 const hotKeys = ref<HotKey[]>([])
-const store = useStore()
 const selectedSinger = ref<Singer | null>(null)
+
+const searchHistory = computed(() => store.searchHistory)
 
 getHotKeys().then((res) => {
   hotKeys.value = res.hotKeys
@@ -56,10 +69,12 @@ function addQuery(key: string) {
 }
 
 function selectSong(song: Song) {
+  saveSearch(query.value)
   store.addSong(song)
 }
 
 function selectSinger(singer: Singer) {
+  saveSearch(query.value)
   selectedSinger.value = singer
   cacheSinger(singer)
 

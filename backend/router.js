@@ -647,7 +647,7 @@ function registerHotKeys(app) {
       },
     }
 
-    post(url, data).then((response) => {
+    post(url, JSON.stringify(data)).then((response) => {
       const data = response.data
       if (data.code === ERR_OK) {
         res.json({

@@ -1,24 +1,28 @@
 <template>
   <div class="search-input">
     <i class="icon-search"></i>
-    <input class="input-inner" v-model="query" />
+    <input class="input-inner" v-model="query" :placeholder="placeholder" />
     <i class="icon-dismiss" v-show="query" @click="clear"></i>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch } from 'vue'
 import { debounce } from 'throttle-debounce'
 
-const props = defineProps<{
-  'modelValue': string
-}>()
+const props = withDefaults(defineProps<{
+  modelValue: string,
+  placeholder: string,
+}>(), {
+  placeholder: '搜索歌曲、歌手'
+})
 const emits = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 const query = ref(props.modelValue)
 
 
 watch(() => props.modelValue, (newValue) => {
   query.value = newValue
+  console.log(newValue)
 })
 
 watch(query, debounce(300, (newQ: any) => {

@@ -3,14 +3,39 @@
     <div class="search-input-wrapper">
       <search-input v-model="query"></search-input>
     </div>
+    <div class="search-content">
+      <div class="hot-keys">
+        <h1 class="title">热门搜索</h1>
+        <ul>
+          <li class="item" v-for="item in hotKeys" :key="item.id" @click="addQuery(item.key)">
+            <span>{{ item.key }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import SearchInput from '@/components/search/SearchInput.vue'
+import { getHotKeys } from '@/service/search'
+
+type HotKey = {
+  key: string,
+  id: number
+}
 
 const query = ref<string>('')
+const hotKeys = ref<HotKey[]>([])
+
+getHotKeys().then((res) => {
+  hotKeys.value = res.hotKeys
+})
+
+function addQuery(key: string) {
+  query.value = key
+}
 
 </script>
 

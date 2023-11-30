@@ -3,22 +3,24 @@
     <div class="search-input-wrapper">
       <search-input v-model="query"></search-input>
     </div>
-    <div class="search-content" v-show="!query">
-      <div class="hot-keys">
-        <h1 class="title">热门搜索</h1>
-        <ul>
-          <li class="item" v-for="item in hotKeys" :key="item.id" @click="addQuery(item.key)">
-            <span>{{ item.key }}</span>
-          </li>
-        </ul>
+    <scroll ref="scrollRef" class="search-content" v-show="!query">
+      <div>
+        <div class="hot-keys">
+          <h1 class="title">热门搜索</h1>
+          <ul>
+            <li class="item" v-for="item in hotKeys" :key="item.id" @click="addQuery(item.key)">
+              <span>{{ item.key }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="search-history" v-show="searchHistory.length">
+          <h1 class="title">
+            <span class="text">搜索历史</span>
+          </h1>
+          <search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearch"></search-list>
+        </div>
       </div>
-      <div class="search-history" v-show="searchHistory.length">
-        <h1 class="title">
-          <span class="text">搜索历史</span>
-        </h1>
-        <search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearch"></search-list>
-      </div>
-    </div>
+    </scroll>
     <div class="search-result" v-show="query">
       <suggest :query="query" @select-song="selectSong" @select-singer="selectSinger"></suggest>
     </div>
@@ -31,19 +33,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue';
 
 import storage from 'good-storage'
 import { useRouter } from 'vue-router'
 import useStore from '@/stores/store'
-import useSearchHistory from '../components/search/useSearchHistory';
+import useSearchHistory from '../components/search/useSearchHistory'
 
+import Scroll from '@/components/wrapScroll/index'
 import SearchInput from '@/components/search/SearchInput.vue'
 import Suggest from '@/components/search/Suggest.vue'
 import SearchList from '@/components/base/searchList/SearchList.vue'
 import { getHotKeys } from '@/service/search'
 import { SINGER_KEY } from '@/assets/js/constant'
 import type { Singer, Song } from './types'
+import type BScroll from '@better-scroll/core'
 
 type HotKey = {
   key: string,
@@ -57,12 +61,24 @@ const { saveSearch, deleteSearch } = useSearchHistory()
 const query = ref<string>('')
 const hotKeys = ref<HotKey[]>([])
 const selectedSinger = ref<Singer | null>(null)
+const scrollRef = ref<BScroll | null>(null)
 
 const searchHistory = computed(() => store.searchHistory)
 
 getHotKeys().then((res) => {
   hotKeys.value = res.hotKeys
 })
+
+watch(query, async (nweQ) => {
+  if (!nweQ) {
+    await nextTick()
+    refreshScroll()
+  }
+})
+
+function refreshScroll() {
+  scrollRef.value?.scroll.refresh()
+}
 
 function addQuery(key: string) {
   query.value = key

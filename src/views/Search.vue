@@ -16,7 +16,11 @@
         <div class="search-history" v-show="searchHistory.length">
           <h1 class="title">
             <span class="text">搜索历史</span>
+            <span class="clear" @click="showConfirm">
+              <i class="icon-clear"></i>
+            </span>
           </h1>
+          <confirm ref="confirmRef" text="是否清空所有历史" confirm-btn-text="清空" @confirm="clearSearch"></confirm>
           <search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearch"></search-list>
         </div>
       </div>
@@ -40,6 +44,7 @@ import { useRouter } from 'vue-router'
 import useStore from '@/stores/store'
 import useSearchHistory from '../components/search/useSearchHistory'
 
+import Confirm from '@/components/base/confirm/confirm.vue'
 import Scroll from '@/components/wrapScroll/index'
 import SearchInput from '@/components/search/SearchInput.vue'
 import Suggest from '@/components/search/Suggest.vue'
@@ -48,6 +53,7 @@ import { getHotKeys } from '@/service/search'
 import { SINGER_KEY } from '@/assets/js/constant'
 import type { Singer, Song } from './types'
 import type BScroll from '@better-scroll/core'
+import confirm from '@/components/base/confirm/confirm.vue';
 
 type HotKey = {
   key: string,
@@ -56,12 +62,13 @@ type HotKey = {
 
 const router = useRouter()
 const store = useStore()
-const { saveSearch, deleteSearch } = useSearchHistory()
+const { saveSearch, deleteSearch, clearSearch } = useSearchHistory()
 
 const query = ref<string>('')
 const hotKeys = ref<HotKey[]>([])
 const selectedSinger = ref<Singer | null>(null)
 const scrollRef = ref<BScroll | null>(null)
+const confirmRef = ref<HTMLElement | null>(null)
 
 const searchHistory = computed(() => store.searchHistory)
 
@@ -103,6 +110,9 @@ function cacheSinger(singer: Singer) {
   storage.session.set(SINGER_KEY, singer)
 }
 
+function showConfirm() {
+  (confirmRef.value as any).show()
+}
 
 
 </script>

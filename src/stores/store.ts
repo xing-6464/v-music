@@ -27,6 +27,29 @@ const useStore = defineStore('store', {
     },
   },
   actions: {
+    addSong(song: Song): void {
+      const playList = [...this.playList]
+      const sequenceList = [...this.sequencesList]
+      let currentIndex = this.currentIndex
+      const playIndex = findIndex(playList, song)
+      if (playIndex > -1) {
+        currentIndex = playIndex
+      } else {
+        playList.push(song)
+        currentIndex = playList.length - 1
+      }
+
+      const sequenceIndex = findIndex(sequenceList, song)
+      if (sequenceIndex === -1) {
+        sequenceList.push(song)
+      }
+
+      this.setSequenceList(sequenceList)
+      this.setPlayList(playList)
+      this.setCurrentIndex(currentIndex)
+      this.setPlayingState(true)
+      this.setFullScreen(true)
+    },
     clearSongList() {
       this.setSequenceList([])
       this.setPlayList([])

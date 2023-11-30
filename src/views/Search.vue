@@ -14,8 +14,13 @@
       </div>
     </div>
     <div class="search-result" v-show="query">
-      <suggest :query="query" @select-song="selectSong"></suggest>
+      <suggest :query="query" @select-song="selectSong" @select-singer="selectSinger"></suggest>
     </div>
+    <router-view v-slot="{ Component }">
+      <transition appear name="slider">
+        <component :is="Component" :data="selectedSinger"></component>
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -25,16 +30,22 @@ import SearchInput from '@/components/search/SearchInput.vue'
 import Suggest from '@/components/search/Suggest.vue'
 import useStore from '@/stores/store'
 import { getHotKeys } from '@/service/search'
-import type { Song } from './types'
+import type { Singer, Song } from './types'
+import { useRouter } from 'vue-router'
+import storage from 'good-storage'
+import { SINGER_KEY } from '@/assets/js/constant'
 
 type HotKey = {
   key: string,
   id: number
 }
 
+const router = useRouter()
+
 const query = ref<string>('')
 const hotKeys = ref<HotKey[]>([])
 const store = useStore()
+const selectedSinger = ref<Singer | null>(null)
 
 getHotKeys().then((res) => {
   hotKeys.value = res.hotKeys
@@ -47,6 +58,21 @@ function addQuery(key: string) {
 function selectSong(song: Song) {
   store.addSong(song)
 }
+
+function selectSinger(singer: Singer) {
+  selectedSinger.value = singer
+  cacheSinger(singer)
+
+  router.push({
+    path: `/search/${singer.mid}`
+  })
+}
+
+function cacheSinger(singer: Singer) {
+  storage.session.set(SINGER_KEY, singer)
+}
+
+
 
 </script>
 

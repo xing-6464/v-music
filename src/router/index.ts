@@ -47,6 +47,12 @@ const router = createRouter({
     {
       path: '/search',
       component: Search,
+      children: [
+        {
+          path: ':id',
+          component: SingerDetail,
+        },
+      ],
     },
   ],
 })

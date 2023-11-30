@@ -1,7 +1,7 @@
 <template>
   <div ref="rootRef" class="suggest" v-loading:[loadingText]="loading" v-no-result:[noResultText]="noResult">
     <ul class="suggest-list">
-      <li class="suggest-item" v-if="singer">
+      <li class="suggest-item" v-if="singer" @click="selectSinger(singer)">
         <div class="icon">
           <i class="icon-mine"></i>
         </div>
@@ -39,7 +39,7 @@ type SuggestProps = {
 const props = withDefaults(defineProps<SuggestProps>(), {
   showSinger: true
 })
-const emits = defineEmits<{ selectSong: [song: Song] }>()
+const emits = defineEmits<{ selectSong: [song: Song], selectSinger: [singer: Singer] }>()
 
 const singer = ref<null | Singer>()
 const songs = ref<Song[]>([])
@@ -113,6 +113,9 @@ function selectSong(song: Song) {
   emits('selectSong', song)
 }
 
+function selectSinger(singer: Singer) {
+  emits('selectSinger', singer)
+}
 </script>
 
 <style lang="scss" scoped>

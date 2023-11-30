@@ -22,7 +22,6 @@ const query = ref(props.modelValue)
 
 watch(() => props.modelValue, (newValue) => {
   query.value = newValue
-  console.log(newValue)
 })
 
 watch(query, debounce(300, (newQ: any) => {

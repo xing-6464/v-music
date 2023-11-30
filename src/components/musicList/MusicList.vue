@@ -36,6 +36,7 @@ const RESERVED_HEIGHT = 40
 const props = withDefaults(defineProps<MusicListProps>(), {
   songs: () => [],
   noResultText: '抱歉，没有找到默认的歌曲',
+  rank: false
 })
 
 const store = useStore()

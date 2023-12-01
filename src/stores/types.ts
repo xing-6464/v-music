@@ -9,4 +9,5 @@ export type StoreState = {
   fullScreen: boolean
   favoriteList: Song[]
   searchHistory: string[]
+  playHistory: Song[]
 }

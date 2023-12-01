@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 import type { StoreState } from './types'
-import { FAVORITE_KEY, PLAY_MODE, SEARCH_KEY } from '@/assets/js/constant'
+import {
+  FAVORITE_KEY,
+  PLAY_KEY,
+  PLAY_MODE,
+  SEARCH_KEY,
+} from '@/assets/js/constant'
 import type { Song } from '@/views/types'
 import { shuffle } from '@/assets/js/util'
 import { load } from '@/assets/js/array-store'
@@ -20,6 +25,7 @@ const useStore = defineStore('store', {
       fullScreen: false,
       favoriteList: load(FAVORITE_KEY),
       searchHistory: load(SEARCH_KEY),
+      playHistory: load(PLAY_KEY),
     }
   },
   getters: {
@@ -142,6 +148,9 @@ const useStore = defineStore('store', {
     },
     setSearchHistory(searches: string[]) {
       this.searchHistory = searches
+    },
+    setPlayHistory(songs: Song[]) {
+      this.playHistory = songs
     },
   },
 })

@@ -11,22 +11,21 @@
         <div class="search-input-wrapper">
           <search-input v-model="query" placeholder="搜索歌曲"></search-input>
         </div>
-        <!-- <div v-show="!query">
-          <switches :items="['最近播放', '搜索历史']" v-model="currentIndex"></switches>
+        <div v-show="!query">
+          <switches :items="['最近播放', '搜索播放']" v-model="currentIndex"></switches>
           <div class="list-wrapper">
-            <scroll v-if="currentIndex === 0" class="list-scroll" ref="scrollRef">
+            <scroll v-if="currentIndex === 0" class="list-scroll">
               <div class="list-inner">
-                <song-list :songs="playHistory" @select="selectSongBySongList">
-                </song-list>
+                <song-list :songs="playHistory"></song-list>
               </div>
             </scroll>
-            <scroll v-if="currentIndex === 1" class="list-scroll" ref="scrollRef">
+            <scroll v-if="currentIndex === 1" class="list-scroll">
               <div class="list-inner">
-                <search-list :searches="searchHistory" :show-delete="false" @select="addQuery"></search-list>
+                <search-list :searches="searchHistory" :show-delete="false"></search-list>
               </div>
             </scroll>
           </div>
-        </div> -->
+        </div>
         <div class="search-result" v-show="query">
           <suggest :query="query" :show-singer="false" @select-song="selectSongBySuggest">
           </suggest>
@@ -43,13 +42,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Suggest from '@/components/search/Suggest.vue'
 import SearchInput from '@/components/search/SearchInput.vue'
+import Switches from '@/components/base/switches/Switches.vue'
+import Scroll from '@/components/wrapScroll'
+import SongList from '@/components/base/songList/SongList.vue'
+import SearchList from '@/components/base/searchList/SearchList.vue'
 
+import useStore from '@/stores/store'
+
+const store = useStore()
 
 const visible = ref(false)
 const query = ref('')
+const currentIndex = ref(0)
+
+const searchHistory = computed(() => store.searchHistory)
+const playHistory = computed(() => store.playHistory)
 
 function show() {
   visible.value = true

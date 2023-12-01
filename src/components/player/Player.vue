@@ -1,6 +1,6 @@
 <template>
   <div class="player" v-show="playlist.length">
-    <transition name="normal" @enter="enter" @after-enter="afterEnter" @leave="leave" @after-leave="afterEnter">
+    <transition name="normal" @enter="enter" @after-enter="afterEnter" @leave="leave" @after-leave="afterLeave">
       <div class="normal-player" v-show="fullScreen">
         <div class="background">
           <img :src="currentSong.pic">
@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, nextTick } from 'vue';
+import { computed, ref, watch, nextTick } from 'vue'
 
 import { formatTime } from '@/assets/js/util'
 import { PLAY_MODE } from '../../assets/js/constant'
@@ -93,6 +93,7 @@ import useAnimation from './useAnimation'
 import MiniPlayer from './MiniPlayer.vue'
 import ProgressBar from './ProgressBar.vue'
 import Scroll from '../base/scroll/Scroll.vue'
+import usePlayHistory from './usePlayHistory'
 
 let progressChanging = false
 
@@ -108,6 +109,7 @@ const { cdCls, cdImageRef, cdRef } = useCd()
 const { currentLyric, currentLineNum, playLyric, lyricListRef, lyricScrollRef, pureMusicLyric, playingLyric, stopLyric } = useLyric({ songReady, currentTime })
 const { currentShow, middleLStyle, middleRStyle, onMiddleTouchEnd, onMiddleTouchMove, onMiddleTouchStart } = useMiddleInteractive()
 const { enter, afterEnter, cdWrapperRef, leave, afterLeave } = useAnimation()
+const { savePlay } = usePlayHistory()
 
 // pinia
 const store = useStore()
@@ -117,6 +119,8 @@ const playing = computed(() => store.playing)
 const currentIndex = computed(() => store.currentIndex)
 const playlist = computed(() => store.playList)
 const playMode = computed(() => store.playMode)
+
+// hooks
 
 // computed
 const playIcon = computed(() => {
@@ -163,8 +167,8 @@ watch(playing, (newPlaying) => {
 
 watch(fullScreen, async (newFullScreen) => {
   if (newFullScreen) {
-    await nextTick()
-    barRef.value!.setOffset(progress.value)
+    await nextTick();
+    (barRef.value as any).setOffset(progress.value)
   }
 })
 
@@ -228,6 +232,7 @@ function ready() {
   if (songReady.value) return
   songReady.value = true
   playLyric()
+  savePlay(currentSong.value)
 }
 
 function error() {

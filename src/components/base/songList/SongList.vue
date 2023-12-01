@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import type { Song } from '../../../views/types'
 
-const props = defineProps<{ songs: Song[], rank: boolean }>()
+const props = defineProps<{ songs: Song[], rank?: boolean }>()
 const emits = defineEmits<{ select: [object: { song: Song, index: number }] }>()
 
 

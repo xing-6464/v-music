@@ -16,12 +16,12 @@
           <div class="list-wrapper">
             <scroll v-if="currentIndex === 0" class="list-scroll">
               <div class="list-inner">
-                <song-list :songs="playHistory"></song-list>
+                <song-list :songs="playHistory" @select="selectSongByList"></song-list>
               </div>
             </scroll>
             <scroll v-if="currentIndex === 1" class="list-scroll">
               <div class="list-inner">
-                <search-list :searches="searchHistory" :show-delete="false"></search-list>
+                <search-list :searches="searchHistory" :show-delete="false" @select="addQuery"></search-list>
               </div>
             </scroll>
           </div>
@@ -50,9 +50,13 @@ import Scroll from '@/components/wrapScroll'
 import SongList from '@/components/base/songList/SongList.vue'
 import SearchList from '@/components/base/searchList/SearchList.vue'
 
+import useSearchHistory from '../search/useSearchHistory'
 import useStore from '@/stores/store'
+import type { Song } from '@/views/types'
 
 const store = useStore()
+
+const { saveSearch } = useSearchHistory()
 
 const visible = ref(false)
 const query = ref('')
@@ -69,8 +73,21 @@ function hide() {
   visible.value = false
 }
 
-function selectSongBySuggest() {
+function addQuery(s: string) {
+  query.value = s
+}
 
+function selectSongByList({ song }: { song: Song, index: number }) {
+  addSong(song)
+}
+
+function addSong(song: Song) {
+  store.addSong(song)
+}
+
+function selectSongBySuggest(song: Song) {
+  addSong(song)
+  saveSearch(query.value)
 }
 
 defineExpose({

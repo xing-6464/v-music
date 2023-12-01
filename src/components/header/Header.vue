@@ -2,6 +2,9 @@
   <div class="header">
     <span class="icon"></span>
     <h1 class="text">Chicken Music</h1>
+    <router-link class="mine" to="/user">
+      <i class="icon-mine"></i>
+    </router-link>
   </div>
 </template>
 
@@ -11,7 +14,7 @@ defineOptions({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .header {
   height: 44px;
   text-align: center;
@@ -35,5 +38,17 @@ defineOptions({
     line-height: 44px;
     font-size: $font-size-large;
   }
-}
-</style>
+
+  .mine {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    .icon-mine {
+      display: block;
+      padding: 12px;
+      font-size: $font-size-large-x;
+      color: $color-theme;
+    }
+  }
+}</style>

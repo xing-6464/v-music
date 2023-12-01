@@ -6,6 +6,7 @@ import Search from '../views/Search.vue'
 import SingerDetail from '../views/SingerDetail.vue'
 import Album from '@/views/Album.vue'
 import TopDetail from '@/views/TopDetail.vue'
+import UserCenter from '@/views/UserCenter.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -53,6 +54,10 @@ const router = createRouter({
           component: SingerDetail,
         },
       ],
+    },
+    {
+      path: '/user',
+      component: UserCenter,
     },
   ],
 })

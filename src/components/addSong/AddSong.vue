@@ -14,12 +14,12 @@
         <div v-show="!query">
           <switches :items="['最近播放', '搜索播放']" v-model="currentIndex"></switches>
           <div class="list-wrapper">
-            <scroll v-if="currentIndex === 0" class="list-scroll">
+            <scroll v-if="currentIndex === 0" class="list-scroll" ref="scrollRef">
               <div class="list-inner">
                 <song-list :songs="playHistory" @select="selectSongByList"></song-list>
               </div>
             </scroll>
-            <scroll v-if="currentIndex === 1" class="list-scroll">
+            <scroll v-if="currentIndex === 1" class="list-scroll" ref="scrollRef">
               <div class="list-inner">
                 <search-list :searches="searchHistory" :show-delete="false" @select="addQuery"></search-list>
               </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick, watch } from 'vue'
 import Suggest from '@/components/search/Suggest.vue'
 import SearchInput from '@/components/search/SearchInput.vue'
 import Switches from '@/components/base/switches/Switches.vue'
@@ -53,6 +53,7 @@ import SearchList from '@/components/base/searchList/SearchList.vue'
 import useSearchHistory from '../search/useSearchHistory'
 import useStore from '@/stores/store'
 import type { Song } from '@/views/types'
+import type BScroll from '@better-scroll/core'
 
 const store = useStore()
 
@@ -61,16 +62,29 @@ const { saveSearch } = useSearchHistory()
 const visible = ref(false)
 const query = ref('')
 const currentIndex = ref(0)
+const scrollRef = ref<BScroll | null>(null)
 
 const searchHistory = computed(() => store.searchHistory)
 const playHistory = computed(() => store.playHistory)
 
-function show() {
+watch(query, async () => {
+  await nextTick()
+  refreshScroll()
+})
+
+async function show() {
   visible.value = true
+
+  await nextTick()
+  refreshScroll()
 }
 
 function hide() {
   visible.value = false
+}
+
+function refreshScroll() {
+  scrollRef.value?.scroll.refresh()
 }
 
 function addQuery(s: string) {

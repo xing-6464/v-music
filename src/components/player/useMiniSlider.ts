@@ -39,7 +39,7 @@ export default function useMiniSlider() {
 
           sliderVal.on('slidePageChanged', ({ pageX }: { pageX: number }) => {
             store.setCurrentIndex(pageX)
-            store.setPlayingState(true)
+            // store.setPlayingState(true)
           })
         } else {
           sliderVal.refresh()

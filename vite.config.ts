@@ -7,6 +7,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), vueJsx()],
+  base: process.env.NODE_ENV === 'production' ? '/music/' : '/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -22,12 +23,13 @@ export default defineConfig({
       },
     },
   },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5175',
-        changeOrigin: true,
-      },
-    },
-  },
+  // base: import.meta.,
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://localhost:5175',
+  //       changeOrigin: true,
+  //     },
+  //   },
+  // },
 })

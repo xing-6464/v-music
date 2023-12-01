@@ -12,7 +12,28 @@ async function createViteServer() {
 
   // app.use(vite.middlewares)
 
-  app.listen(5175)
+  app.listen(5173)
 }
 
 createViteServer()
+
+// import express from 'express'
+// import { createServer } from 'vite'
+// import registerRouter from './router'
+
+// const parentServer = express()
+// registerRouter(parentServer)
+
+// const vite = await createServer({
+//   server: {
+//     middlewareMode: true,
+//     https: parentServer,
+//   },
+//   proxy: {
+//     '/api': {
+//       target: 'http://localhost:5175',
+//       changeOrigin: true,
+//     },
+//   },
+// })
+// vite.middlewares.handle()

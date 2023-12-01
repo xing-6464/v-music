@@ -30,12 +30,12 @@
           <suggest :query="query" :show-singer="false" @select-song="selectSongBySuggest">
           </suggest>
         </div>
-        <!-- <message ref="messageRef">
+        <message ref="messageRef">
           <div class="message-title">
             <i class="icon-ok"></i>
             <span class="text">1首歌曲已经添加到播放列表</span>
           </div>
-        </message> -->
+        </message>
       </div>
     </transition>
   </teleport>
@@ -49,6 +49,7 @@ import Switches from '@/components/base/switches/Switches.vue'
 import Scroll from '@/components/wrapScroll'
 import SongList from '@/components/base/songList/SongList.vue'
 import SearchList from '@/components/base/searchList/SearchList.vue'
+import Message from '@/components/base/message/Message.vue'
 
 import useSearchHistory from '../search/useSearchHistory'
 import useStore from '@/stores/store'
@@ -63,6 +64,7 @@ const visible = ref(false)
 const query = ref('')
 const currentIndex = ref(0)
 const scrollRef = ref<BScroll | null>(null)
+const messageRef = ref<HTMLElement | null>(null)
 
 const searchHistory = computed(() => store.searchHistory)
 const playHistory = computed(() => store.playHistory)
@@ -97,11 +99,16 @@ function selectSongByList({ song }: { song: Song, index: number }) {
 
 function addSong(song: Song) {
   store.addSong(song)
+  showMessage()
 }
 
 function selectSongBySuggest(song: Song) {
   addSong(song)
   saveSearch(query.value)
+}
+
+function showMessage() {
+  (messageRef.value as any).show()
 }
 
 defineExpose({

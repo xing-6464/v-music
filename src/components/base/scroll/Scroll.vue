@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import useScroll from './useScroll.ts'
+import useScroll from './useScroll'
 import type { ScrollProps, ScrollEmits } from './useScroll'
 
 

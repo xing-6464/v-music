@@ -12,7 +12,7 @@ import {
 import Scroll from '@/components/base/scroll/Scroll.vue'
 import useStore from '@/stores/store'
 
-export default defineComponent({
+export default defineComponent<typeof Scroll>({
   name: 'wrap-scroll',
   props: Scroll.props,
   emits: Scroll.emits,
@@ -34,7 +34,7 @@ export default defineComponent({
   setup() {
     const scrollRef = ref(null)
     const scroll = computed(() => {
-      return scrollRef.value?.scroll
+      return (scrollRef.value as any).scroll
     })
     const store = useStore()
     const playlist = computed(() => store.playList)

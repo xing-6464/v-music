@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import useSlider from './useSlider.ts'
+import useSlider from './useSlider'
 type SliderProps = {
   sliders: any[]
 }

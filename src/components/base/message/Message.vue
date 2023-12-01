@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{ delay: number }>(), {
 
 const visible = ref(false)
 
-let timer = null
+let timer: any = null
 
 function hide() {
   clearTimeout(timer)

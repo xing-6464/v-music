@@ -15,8 +15,8 @@
         </div>
       </div>
       <div class="control">
-        <ProgressCircle :radius="32" :progress="props.progress">
-          <i class="icon-mini" :class="miniPlayIcon" @click.stop="props.togglePlay"></i>
+        <ProgressCircle :radius="32" :progress="progress">
+          <i class="icon-mini" :class="miniPlayIcon" @click.stop="togglePlay"></i>
         </ProgressCircle>
       </div>
       <div class="control" @click.stop="showPlayList">
@@ -37,7 +37,7 @@ import PlayList from './PlayList.vue'
 import useCd from './useCd'
 import useMiniSlider from './useMiniSlider'
 
-const props = withDefaults(defineProps<{ progress: number, togglePlay: Function }>(), {
+withDefaults(defineProps<{ progress: number, togglePlay: () => void }>(), {
   progress: 0
 })
 
@@ -62,7 +62,7 @@ function showNormalPlayer() {
 }
 
 function showPlayList() {
-  playListRef.value!.show()
+  (playListRef.value as any).show()
 }
 
 

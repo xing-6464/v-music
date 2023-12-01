@@ -191,6 +191,7 @@ function onProgressChanged(progress: number) {
 
 function togglePlay() {
   if (!songReady.value) return
+  console.log(playing.value)
   store.setPlayingState(!playing.value)
 }
 

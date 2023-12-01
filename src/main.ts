@@ -25,6 +25,7 @@ pinia.use(
       'changeMode',
       'addSongLyric',
       'removeSong',
+      'setPlayingState',
     ],
   })
 )

@@ -23,9 +23,9 @@ const useStore = defineStore('store', {
       playMode: PLAY_MODE.sequence,
       currentIndex: 0,
       fullScreen: false,
-      favoriteList: load(FAVORITE_KEY),
+      favoriteList: [],
       searchHistory: load(SEARCH_KEY),
-      playHistory: load(PLAY_KEY),
+      playHistory: [],
     }
   },
   getters: {

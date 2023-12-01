@@ -154,4 +154,4 @@ function selectSinger(singer: Singer) {
     }
   }
 }
-</style>
+</style>import usePullUpLoad from './usePullUpLoad.1'

@@ -49,4 +49,4 @@ function cacheSinger(singer: Singer) {
   top: 88px;
   bottom: 0;
 }
-</style>../components/indexList/IndexList.vue../components/indexList/IndexList.vue../assets/ts/constant
+</style>
